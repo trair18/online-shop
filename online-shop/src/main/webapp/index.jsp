@@ -13,7 +13,7 @@
 <body>
 <form action = "DispatcherServlet" method="get"></form>
 
-    <c:redirect url="product/main">
+    <c:redirect url="/product/main">
 
     </c:redirect>
 </body>

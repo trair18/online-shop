@@ -20,7 +20,6 @@ public class UserService {
 
     public void signUp(User user){
         try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
             cn.setAutoCommit(false);
@@ -43,7 +42,6 @@ public class UserService {
 
     public boolean CheckIsFreeEmail(String email){
         try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
@@ -56,8 +54,6 @@ public class UserService {
                     return false;
                 }
             }
-        } catch (SQLException e) {
-            LOGGER.error(e);
         } catch (ConnectionPoolException e) {
             LOGGER.error(e);
         } catch (DAOException e) {
@@ -69,7 +65,6 @@ public class UserService {
     public boolean checkSignIn(User curUser){
         try {
 
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
             List<User> users;
@@ -84,8 +79,6 @@ public class UserService {
                     }
                 }
             }
-        } catch (SQLException e) {
-            LOGGER.error(e);
         } catch (ConnectionPoolException e) {
             LOGGER.error(e);
         } catch (DAOException e) {

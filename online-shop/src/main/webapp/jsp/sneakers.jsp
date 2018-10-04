@@ -36,7 +36,7 @@
                         <div class="card-body">
                             <h5 class="card-title"><c:out value="${elem.name}"/></h5>
                             <p class="card-text"><c:out value="${elem.price}"/></p>
-                            <p class="card-text"><c:out value="${elem.id}"/></p>
+
                             <button type="submit" class="btn btn-secondary btn-lg">Добавить в корзину</button>
                         </div>
                         <input name="id" hidden="true" value="${elem.id}"/>
@@ -46,7 +46,6 @@
             </c:forEach>
         </c:if>
     </div>
-    ${basket}
 </div>
 
 </body>

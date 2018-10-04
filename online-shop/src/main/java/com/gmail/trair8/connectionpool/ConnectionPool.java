@@ -30,8 +30,9 @@ public class ConnectionPool {
         try {
             givenAwayConQueue = new ArrayBlockingQueue<Connection>(DEFAULT_POOL_SIZE);
             connectionQueue = new ArrayBlockingQueue<Connection>(DEFAULT_POOL_SIZE);
+            ConnectionProducer connectionProducer = new ConnectionProducer();
             for (int i = 0; i < DEFAULT_POOL_SIZE; i++) {
-                Connection connection = Connector.getConnection();
+                Connection connection = connectionProducer.produce();
                 ProxyConnection proxyConnection = new ProxyConnection(
                         connection);
                 connectionQueue.add(proxyConnection);

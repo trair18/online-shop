@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: Lenovo
@@ -6,8 +6,11 @@
   Time: 1:32
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${lang}"/>
+<fmt:bundle basename="text">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/online-shop">Online-shop</a>
@@ -19,19 +22,20 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Каталог
+                    <fmt:message key="navbar.catalog.title"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Одежда</a>
-                    <a class="dropdown-item" href="/online-shop/product/sneakers">Обувь</a>
-                    <a class="dropdown-item" href="#">Аксессуары</a>
+                    <a class="dropdown-item" href="#"><fmt:message key="navbar.catalog.clothes"/></a>
+                    <a class="dropdown-item" href="/online-shop/product/sneakers"><fmt:message key="navbar.catalog.sneakers"/></a>
+                    <a class="dropdown-item" href="#"><fmt:message key="navbar.catalog.accessories"/></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Скидки</a>
+                    <a class="dropdown-item" href="#"><fmt:message key="navbar.catalog.sales"/></a>
                 </div>
             </li>
 
         </ul>
 
+        <a class="button" href="/online-shop/product/cart">Корзина</a>
     <c:choose>
         <c:when test="${role.equals('client')}">
             <div class="nav-item dropdown">
@@ -41,7 +45,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Мои Данные</a>
                     <a class="dropdown-item" href="#">Мои Заказы</a>
-                    <a class="dropdown-item" href="/online-shop/product/basket">Корзина</a>
+
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/online-shop/user/signout" >Выйти</a>
                 </div>
@@ -50,12 +54,12 @@
         <c:otherwise>
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Войти
+                    Log in
                 </a>
                 <div class="dropdown-menu">
-                    <form class="px-4 py-3" action="${pageContext.request.contextPath}/user/signin" method="POST">
+                    <form class="px-4 py-3" action="/online-shop/user/signin" method="POST">
                         <div class="form-group">
-                            <label for="exampleDropdownFormEmail1">Email address</label>
+                            <label for="exampleDropdownFormEmail1"><fmt:message key="login.email"/> </label>
                             <input name="email" type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
                         </div>
                         <div class="form-group">
@@ -69,6 +73,7 @@
                             </label>
                         </div>
                         <button type="submit" class="btn btn-primary">Sign in</button>
+                        <input name="currentReq" hidden="true" value="${pageContext.request.requestURI}"/>
                     </form>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/online-shop/user/signup">New around here? Sign up</a>
@@ -85,3 +90,4 @@
 
     </div>
 </nav>
+</fmt:bundle>

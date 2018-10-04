@@ -47,15 +47,11 @@
         <button type="submit" class="btn btn-primary">Sign in</button>
     </form>
 
-    <c:if test="${user != null}">
-        ${user.firstName} ${user.surname} успешно зарегестрирован!
-    </c:if>
-    <c:if test="${user == null}">
+
+    <c:if test="${isFree == false}">
         Пользователь с такой почтой уже зарегестривован!
     </c:if>
-    <c:if test="${role.equals('client')}">
-        role: ${role}
-    </c:if>
+
 
 </div>
 

@@ -31,6 +31,8 @@ public class ProductDAO extends AbstractDAO<Product>{
         super(connection);
     }
 
+
+
     @Override
     public List<Product> findAll() throws DAOException{
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_PRODUCTS)){

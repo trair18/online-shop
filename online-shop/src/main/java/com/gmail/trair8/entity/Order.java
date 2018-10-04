@@ -1,6 +1,10 @@
 package com.gmail.trair8.entity;
 
+import com.gmail.trair8.controller.ControllerA;
+import org.reflections.Reflections;
+
 import java.util.Objects;
+import java.util.Set;
 
 public class Order implements Entity{
     private int id;
@@ -120,5 +124,11 @@ public class Order implements Entity{
                 ", payment='" + payment + '\'' +
                 ", time=" + time +
                 '}';
+    }
+
+    public static void main(String[] args) {
+        Reflections reflections = new Reflections("com.gmail.trair8.controller");
+        Set<Class<? extends Object>> allClasses = reflections.getTypesAnnotatedWith(ControllerA.class);
+        System.out.println(allClasses);
     }
 }

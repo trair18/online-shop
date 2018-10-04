@@ -25,10 +25,9 @@ public class ProductService {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public List<Product> findBasketProd(List<Integer> list){
+    public List<Product> findCartProd(List<Integer> list){
         List<Product> products = new ArrayList<>();
         try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
@@ -39,8 +38,6 @@ public class ProductService {
             }
             connectionPool.closeConnection(cn);
 
-        } catch (SQLException e) {
-            LOGGER.error(e);
         } catch (ConnectionPoolException e) {
             LOGGER.error(e);
         } catch (DAOException e) {
@@ -52,15 +49,12 @@ public class ProductService {
     public List<Product> findAll(){
         List<Product> products = new ArrayList<>();
         try {
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
             ProductDAO productDAO = new ProductDAO(cn);
             products = productDAO.findAll();
             connectionPool.closeConnection(cn);
-        } catch (SQLException e) {
-            LOGGER.error(e);
         } catch (ConnectionPoolException e) {
             LOGGER.error(e);
         } catch (DAOException e) {
