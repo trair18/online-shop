@@ -1,6 +1,9 @@
-package com.gmail.trair8.controller;
+package com.gmail.trair8.controller.impl;
 
 import com.gmail.trair8.connectionpool.ConnectionPool;
+import com.gmail.trair8.controller.Controller;
+import com.gmail.trair8.controller.ControllerA;
+import com.gmail.trair8.controller.RequestMapping;
 import com.gmail.trair8.dao.UserDAO;
 import com.gmail.trair8.entity.User;
 import com.gmail.trair8.exception.ConnectionPoolException;
@@ -18,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ControllerA(path = "/user")
-public class UserController implements Controller{
+public class UserController implements Controller {
 
     private final static Logger LOGGER = LogManager.getLogger(UserController.class.getName());
     private UserService userService = new UserService();
 
-    @RequestMapping(method = "get", path = "/list")
+    @RequestMapping(path = "/list")
     public String findAll(HttpServletRequest request){
         List<User> users = new ArrayList<>();
         try {
@@ -45,7 +48,7 @@ public class UserController implements Controller{
         return "/jsp/list.jsp";
     }
 
-    @RequestMapping(method = "post", path = "/signin")
+    @RequestMapping(path = "/signin")
     public String signIn(HttpServletRequest request){
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -65,7 +68,7 @@ public class UserController implements Controller{
         return "/jsp/userpage.jsp";
     }
 
-    @RequestMapping(method = "post", path = "/signupform")
+    @RequestMapping(path = "/signupform")
     public String signUpForm(HttpServletRequest request){
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -91,30 +94,30 @@ public class UserController implements Controller{
         return "/jsp/signup.jsp";
     }
 
-    @RequestMapping(method = "get", path = "/signup")
+    @RequestMapping(path = "/signup")
     public String signUp(HttpServletRequest request) {
         return "/jsp/signup.jsp";
     }
 
-    @RequestMapping(method = "get", path = "/signout")
+    @RequestMapping(path = "/signout")
     public String signOut(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         session.setAttribute("role", "guest");
-        return new ProductController().findAll(request);
+        return Controllers.PRODUCT_CONTROLLER.findAll(request);
     }
 
-    @RequestMapping(method = "get", path = "/langen")
+    @RequestMapping(path = "/langen")
     public String setEnLang(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         session.setAttribute("lang", "en");
-        return new ProductController().findAll(request);
+        return Controllers.PRODUCT_CONTROLLER.findAll(request);
     }
 
-    @RequestMapping(method = "get", path = "/langru")
+    @RequestMapping(path = "/langru")
     public String setRuLang(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         session.setAttribute("lang", "ru");
-        return new ProductController().findAll(request);
+        return Controllers.PRODUCT_CONTROLLER.findAll(request);
     }
 
 }

@@ -16,7 +16,7 @@ public class ConnectionProducer {
 
     private Properties configProp;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/cafe";
+    private static final String URL = "jdbc:mysql://localhost:3306/cafe?autoReconnect=true&useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "artem7102565";
     private static final String AUTO_RECONNECT = "true";

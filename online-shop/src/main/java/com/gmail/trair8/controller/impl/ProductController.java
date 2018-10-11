@@ -1,5 +1,8 @@
-package com.gmail.trair8.controller;
+package com.gmail.trair8.controller.impl;
 
+import com.gmail.trair8.controller.Controller;
+import com.gmail.trair8.controller.ControllerA;
+import com.gmail.trair8.controller.RequestMapping;
 import com.gmail.trair8.entity.Product;
 import com.gmail.trair8.service.ProductService;
 import org.apache.logging.log4j.LogManager;
@@ -12,13 +15,13 @@ import java.util.List;
 
 
 @ControllerA(path = "/product")
-public class ProductController implements Controller{
+public class ProductController implements Controller {
 
     private final static Logger LOGGER = LogManager.getLogger(ProductController.class);
 
     private ProductService productService = new ProductService();
 
-    @RequestMapping(method = "get", path = "/main")
+    @RequestMapping(path = "/main")
     public String findAll(HttpServletRequest request){
 
         HttpSession session = request.getSession(true);
@@ -33,7 +36,7 @@ public class ProductController implements Controller{
         return "/jsp/main.jsp";
     }
 
-    @RequestMapping(method = "get", path = "/sneakers")
+    @RequestMapping(path = "/sneakers")
     public String findAllSneakers(HttpServletRequest request){
 
         List<Product> products = new ArrayList<>();
@@ -42,7 +45,7 @@ public class ProductController implements Controller{
         return "/jsp/sneakers.jsp";
     }
 
-    @RequestMapping(method = "get", path = "/add")
+    @RequestMapping(path = "/add")
     public String add(HttpServletRequest request){
 
         HttpSession session = request.getSession(true);
@@ -52,7 +55,7 @@ public class ProductController implements Controller{
         return findAllSneakers(request);
     }
 
-    @RequestMapping(method = "get", path = "/delete")
+    @RequestMapping(path = "/delete")
     public String delete(HttpServletRequest request){
 
         HttpSession session = request.getSession(true);
@@ -64,7 +67,7 @@ public class ProductController implements Controller{
 
 
 
-    @RequestMapping(method = "get",path = "/cart")
+    @RequestMapping(path = "/cart")
     public String showCart(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         List<Integer> list = (List<Integer>) session.getAttribute("cart");

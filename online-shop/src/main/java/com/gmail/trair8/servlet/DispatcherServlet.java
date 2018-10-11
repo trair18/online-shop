@@ -2,6 +2,9 @@ package com.gmail.trair8.servlet;
 
 
 import com.gmail.trair8.controller.*;
+import com.gmail.trair8.controller.impl.Controllers;
+import com.gmail.trair8.controller.impl.ProductController;
+import com.gmail.trair8.controller.impl.UserController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,12 +28,18 @@ public class DispatcherServlet extends HttpServlet {
     private ProductController productController = new ProductController();
     private Map<Class, Controller> map = new HashMap<>();
 
+    private Map<String, EndpointMethod> asd;
+
     @Override
     public void init() throws ServletException {
         map.put(ProductController.class, productController);
         map.put(UserController.class, userController);
+        initUrlToEndpointMethod();
+
 
     }
+
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -82,6 +91,30 @@ public class DispatcherServlet extends HttpServlet {
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
             requestDispatcher.forward(request, response);
 
+    }
+
+    private Map<String, EndpointMethod> initUrlToEndpointMethod() {
+        String servletPath = "/online-shop";
+        String classPath = null;
+        String methodPath = null;
+        Map<String, EndpointMethod> urlToEndpointMethod = new HashMap<>();
+        for (Object controller : Controllers.getAll()) {
+            if (controller.getClass().isAnnotationPresent(ControllerA.class)) {
+                ControllerA controllerA = controller.getClass().getAnnotation(ControllerA.class);
+                classPath = controllerA.path();
+            }
+            for (Method method : controller.getClass().getDeclaredMethods()) {
+                if (method.isAnnotationPresent(RequestMapping.class)) {
+                    RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+                    methodPath = requestMapping.path();
+                    urlToEndpointMethod.put(
+                            servletPath + classPath + methodPath,
+                            new EndpointMethod(method, controller)
+                    );
+                }
+            }
+        }
+        return urlToEndpointMethod;
     }
 
 }

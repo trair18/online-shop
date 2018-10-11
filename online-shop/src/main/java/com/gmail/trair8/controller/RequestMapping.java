@@ -9,7 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RequestMapping {
 
-    public String method() default "get";
-
-    public String path();
+    String path();
 }
