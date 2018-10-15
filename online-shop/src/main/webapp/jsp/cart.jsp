@@ -35,10 +35,12 @@
 
             </div>
         </c:forEach>
+        <a href="/online-shop/order/makeOrderForm" type="button"  class="btn btn-primary btn-lg btn-block">Кнопка блочного уровня</a>
+
     </c:if>
 
 
 </div>
-
+<jsp:include page="/jsp/include/footer.jsp" />
 </body>
 </html>

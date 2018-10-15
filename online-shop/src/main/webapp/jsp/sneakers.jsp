@@ -29,8 +29,22 @@
     <div class="row">
         <c:if test="${not empty products}">
             <c:forEach var="elem" items="${products}" varStatus="status">
-
                 <div class="col-sm-3">
+                    <c:choose>
+                    <c:when test="${role.equals('admin')}">
+                        <form class="card" style="width: 18rem;" action="${pageContext.request.contextPath}/product/editProductForm" method="GET">
+                            <img class="card-img-top" src="${elem.img}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title"><c:out value="${elem.name}"/></h5>
+                                <p class="card-text"><c:out value="${elem.price}"/></p>
+
+                                <button type="submit" class="btn btn-secondary btn-lg">Редактировать</button>
+                            </div>
+                            <input name="id" hidden="true" value="${elem.id}"/>
+                        </form>
+
+                    </c:when>
+                    <c:otherwise>
                     <form class="card" style="width: 18rem;" action="${pageContext.request.contextPath}/product/add" method="GET">
                         <img class="card-img-top" src="${elem.img}" alt="Card image cap">
                         <div class="card-body">
@@ -41,12 +55,15 @@
                         </div>
                         <input name="id" hidden="true" value="${elem.id}"/>
                     </form>
+                    </c:otherwise>
+                    </c:choose>
+
 
                 </div>
             </c:forEach>
         </c:if>
     </div>
 </div>
-
+<jsp:include page="/jsp/include/footer.jsp" />
 </body>
 </html>

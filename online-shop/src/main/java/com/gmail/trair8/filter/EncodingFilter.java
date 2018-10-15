@@ -1,5 +1,4 @@
 package com.gmail.trair8.filter;
-/*
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -22,7 +21,6 @@ public class EncodingFilter implements Filter {
             req.setCharacterEncoding(code);
             resp.setCharacterEncoding(code);
         }
-        System.out.println("encoding!!!!!!");
         chain.doFilter(req, resp);
     }
 
@@ -31,4 +29,3 @@ public class EncodingFilter implements Filter {
     }
 
 }
-*/

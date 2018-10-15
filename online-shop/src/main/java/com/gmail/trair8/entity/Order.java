@@ -1,37 +1,34 @@
 package com.gmail.trair8.entity;
 
-import com.gmail.trair8.controller.ControllerA;
-import org.reflections.Reflections;
-
+import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
 public class Order implements Entity{
     private int id;
     private int userId;
     private int productId;
-    private boolean isActual;
+    private boolean actual;
     private String address;
     private String payment;
-    private long time;
+    private Date time;
 
     public Order() {
     }
 
-    public Order(int userId, int productId, boolean isActual, String address, String payment, long time) {
+    public Order(int userId, int productId, boolean isActual, String address, String payment, Date time) {
         this.userId = userId;
         this.productId = productId;
-        this.isActual = isActual;
+        this.actual = isActual;
         this.address = address;
         this.payment = payment;
         this.time = time;
     }
 
-    public Order(int id, int userId, int productId, boolean isActual, String address, String payment, long time) {
+    public Order(int id, int userId, int productId, boolean isActual, String address, String payment, Date time) {
         this.id = id;
         this.userId = userId;
         this.productId = productId;
-        this.isActual = isActual;
+        this.actual = isActual;
         this.address = address;
         this.payment = payment;
         this.time = time;
@@ -62,11 +59,11 @@ public class Order implements Entity{
     }
 
     public boolean isActual() {
-        return isActual;
+        return actual;
     }
 
     public void setActual(boolean actual) {
-        isActual = actual;
+        this.actual = actual;
     }
 
     public String getAddress() {
@@ -85,11 +82,11 @@ public class Order implements Entity{
         this.payment = payment;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -101,16 +98,16 @@ public class Order implements Entity{
         return id == order.id &&
                 userId == order.userId &&
                 productId == order.productId &&
-                isActual == order.isActual &&
-                time == order.time &&
+                actual == order.actual &&
                 Objects.equals(address, order.address) &&
-                Objects.equals(payment, order.payment);
+                Objects.equals(payment, order.payment) &&
+                Objects.equals(time, order.time);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, userId, productId, isActual, address, payment, time);
+        return Objects.hash(id, userId, productId, actual, address, payment, time);
     }
 
     @Override
@@ -119,16 +116,10 @@ public class Order implements Entity{
                 "id=" + id +
                 ", userId=" + userId +
                 ", productId=" + productId +
-                ", isActual=" + isActual +
+                ", actual=" + actual +
                 ", address='" + address + '\'' +
                 ", payment='" + payment + '\'' +
                 ", time=" + time +
                 '}';
-    }
-
-    public static void main(String[] args) {
-        Reflections reflections = new Reflections("com.gmail.trair8.controller");
-        Set<Class<? extends Object>> allClasses = reflections.getTypesAnnotatedWith(ControllerA.class);
-        System.out.println(allClasses);
     }
 }

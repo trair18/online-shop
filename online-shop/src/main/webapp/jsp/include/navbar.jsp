@@ -35,7 +35,9 @@
 
         </ul>
 
-        <a class="button" href="/online-shop/product/cart">Корзина</a>
+        <c:if test="${!role.equals('admin')}">
+            <a class="button" href="/online-shop/product/cart">Корзина</a>
+        </c:if>
     <c:choose>
         <c:when test="${role.equals('client')}">
             <div class="nav-item dropdown">
@@ -44,8 +46,21 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Мои Данные</a>
-                    <a class="dropdown-item" href="#">Мои Заказы</a>
-
+                    <a class="dropdown-item" href="/online-shop/order/myOrders">Мои Заказы</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/online-shop/user/signout" >Выйти</a>
+                </div>
+            </div>
+        </c:when>
+        <c:when test="${role.equals('admin')}">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Инфо
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                    <a class="dropdown-item" href="/online-shop/product/addProductForm">Добавить товар</a>
+                    <a class="dropdown-item" href="/online-shop/user/allUsers">Пользователи</a>
+                    <a class="dropdown-item" href="/online-shop/order/allOrders">Заказы</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/online-shop/user/signout" >Выйти</a>
                 </div>

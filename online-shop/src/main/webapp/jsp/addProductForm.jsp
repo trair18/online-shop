@@ -1,9 +1,8 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Lenovo
-  Date: 21.09.2018
-  Time: 21:24
+  Date: 15.10.2018
+  Time: 18:06
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -22,35 +21,41 @@
 
 <div class="container-fluid">
 
-    <form action="${pageContext.request.contextPath}/user/signupform" method="POST">
+    <form action="${pageContext.request.contextPath}/product/addProduct" method="POST">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="inputEmail4">Email</label>
-                <input name="email" type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                <label for="inputName">Name</label>
+                <input name="name" type="name" class="form-control" id="inputName" placeholder="Name">
             </div>
             <div class="form-group col-md-6">
-                <label for="inputPassword4">Password</label>
-                <input name="password" type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                <label for="inputCategory">Category</label>
+                <input name="category" type="category" class="form-control" id="inputCategory" placeholder="Category">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="inputFirstName">First name</label>
-                <input name="firstName" type="firtsname" class="form-control" id="inputFirstName" placeholder="First name">
+                <label for="inputPrice">Price</label>
+                <input name="price" type="price" class="form-control" id="inputPrice" placeholder="Price">
             </div>
             <div class="form-group col-md-6">
-                <label for="inputSurname">Surname</label>
-                <input name="surname" type="surname" class="form-control" id="inputSurname" placeholder="Surname">
+                <label for="inputInStock">inStock</label>
+                <input name="inStock" type="inStock" class="form-control" id="inputInStock" placeholder="In Stock">
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputImg">Img</label>
+                <input name="img" type="img" class="form-control" id="inputImg" placeholder="Img">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputImg">Добавить изображение в хранилище</label>
+                <a href="https://ru.imgbb.com/">https://ru.imgbb.com/</a>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
-
-
-    <c:if test="${isFree == false}">
-        Пользователь с такой почтой уже зарегестривован!
-    </c:if>
 
 
 </div>
@@ -58,3 +63,4 @@
 <jsp:include page="/jsp/include/footer.jsp" />
 </body>
 </html>
+

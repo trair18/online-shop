@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OrderDAO extends AbstractDAO<Order>{
@@ -20,12 +21,19 @@ public class OrderDAO extends AbstractDAO<Order>{
     private final static String SELECT_ORDER_BY_ID_SQL =
             "SELECT * FROM orders WHERE id = ?";
 
-    private final static String INSERT_USER_SQL =
+    private final static String INSERT_ORDER_SQL =
             "INSERT INTO orders (User_id, Product_id, isActual, address, payment, time)" +
                     "VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_ORDER =
             "UPDATE orders SET User_id, Product_id = ?, isActual = ?, address = ?, payment = ?, time = ? WHERE id = ?";
+
+    private static final String UPDATE_ACTUAL =
+            "UPDATE orders SET isActual = ? WHERE id = ?";
+
+
+    private final static String SELECT_ORDERS_BY_USER_ID_SQL =
+            "SELECT * FROM orders WHERE User_id = ?";
 
     public OrderDAO(Connection connection) {
         super(connection);
@@ -58,6 +66,22 @@ public class OrderDAO extends AbstractDAO<Order>{
         }
     }
 
+    public List<Order> findOrderByUserId(int userId) throws DAOException{
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDERS_BY_USER_ID_SQL)){
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            List<Order> orderList = new ArrayList<Order>();
+            while (rs.next()){
+                orderList.add(makeEntity(rs));
+            }
+            return orderList;
+        }catch (SQLException e){
+            throw new DAOException("Problem when trying to find order by user id", e);
+        }
+    }
+
+
+
     private Order makeEntity(ResultSet rs) throws SQLException {
         Order order = new Order();
         order.setId(rs.getInt("id"));
@@ -66,22 +90,22 @@ public class OrderDAO extends AbstractDAO<Order>{
         order.setActual(rs.getBoolean("isActual"));
         order.setAddress(rs.getString("address"));
         order.setPayment(rs.getString("payment"));
-        order.setTime(rs.getLong("time"));
+        order.setTime(new Date(rs.getLong("time")));
         return order;
     }
 
     @Override
     public void insert(Order order) throws DAOException{
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_USER_SQL)){
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_ORDER_SQL)){
             ps.setInt(1, order.getUserId());
             ps.setInt(2, order.getProductId());
             ps.setBoolean(3, order.isActual());
             ps.setString(4, order.getAddress());
             ps.setString(5, order.getPayment());
-            ps.setLong(6, order.getTime());
+            ps.setLong(6, order.getTime().getTime());
             ps.executeUpdate();
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to insert order", e);
+            System.out.println(e);
         }
     }
 
@@ -93,11 +117,25 @@ public class OrderDAO extends AbstractDAO<Order>{
             ps.setBoolean(3, order.isActual());
             ps.setString(4, order.getAddress());
             ps.setString(5, order.getPayment());
-            ps.setLong(6, order.getTime());
+            ps.setLong(6, order.getTime().getTime());
             ps.setInt(7, id);
             ps.executeUpdate();
         }catch (SQLException e){
             throw new DAOException("Problem when trying to update order by id", e);
         }
     }
+
+
+    public void updateActual(int id, boolean actual) throws DAOException{
+        try (PreparedStatement ps = connection.prepareStatement(UPDATE_ACTUAL)) {
+            ps.setBoolean(1, actual);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+    }
+
+
+
 }

@@ -26,17 +26,11 @@ public class DispatcherServlet extends HttpServlet {
 
     private UserController userController = new UserController();
     private ProductController productController = new ProductController();
-    private Map<Class, Controller> map = new HashMap<>();
-
-    private Map<String, EndpointMethod> asd;
+    private Map<String, EndpointMethod> map;
 
     @Override
     public void init() throws ServletException {
-        map.put(ProductController.class, productController);
-        map.put(UserController.class, userController);
-        initUrlToEndpointMethod();
-
-
+        map = initUrlToEndpointMethod();
     }
 
 
@@ -56,40 +50,13 @@ public class DispatcherServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String path = request.getRequestURI().substring("/online-shop".length());
+        String path = request.getRequestURI();
 
-        String view = null;
-        Class cl = null;
-        Controller controller = null;
+        EndpointMethod endpointMethod = map.get(path);
+        String view = endpointMethod.invoke(request);
 
-        for(Map.Entry<Class, Controller> pair : map.entrySet()) {
-            Class cur = pair.getKey();
-            ControllerA a = (ControllerA) cur.getAnnotation(ControllerA.class);
-            String q = a.path();
-            if (q.equals(path.substring(0, path.indexOf("/", 1)))) {
-                cl = cur;
-                controller = pair.getValue();
-                path = path.substring(path.indexOf("/", 1));
-                break;
-            }
-        }
-
-        for (Method method : cl.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(RequestMapping.class)){
-                RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                if (requestMapping.path().equals(path)){
-                    try {
-                        view =  method.invoke(controller, request).toString();
-                        break;
-                    }catch (Exception e){
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
-            requestDispatcher.forward(request, response);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
+        requestDispatcher.forward(request, response);
 
     }
 
@@ -99,14 +66,14 @@ public class DispatcherServlet extends HttpServlet {
         String methodPath = null;
         Map<String, EndpointMethod> urlToEndpointMethod = new HashMap<>();
         for (Object controller : Controllers.getAll()) {
-            if (controller.getClass().isAnnotationPresent(ControllerA.class)) {
-                ControllerA controllerA = controller.getClass().getAnnotation(ControllerA.class);
-                classPath = controllerA.path();
+            if (controller.getClass().isAnnotationPresent(RequestMappingClass.class)) {
+                RequestMappingClass requestMappingClass = controller.getClass().getAnnotation(RequestMappingClass.class);
+                classPath = requestMappingClass.path();
             }
             for (Method method : controller.getClass().getDeclaredMethods()) {
-                if (method.isAnnotationPresent(RequestMapping.class)) {
-                    RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                    methodPath = requestMapping.path();
+                if (method.isAnnotationPresent(RequestMappingMethod.class)) {
+                    RequestMappingMethod requestMappingMethod = method.getAnnotation(RequestMappingMethod.class);
+                    methodPath = requestMappingMethod.path();
                     urlToEndpointMethod.put(
                             servletPath + classPath + methodPath,
                             new EndpointMethod(method, controller)

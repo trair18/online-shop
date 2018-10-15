@@ -10,11 +10,11 @@ public class User implements Entity {
     private String firstName;
     private String account;
     private int loyaltyPoints;
-    private boolean isBlocked;
-    private boolean isAdmin;
+    private boolean blocked;
+    private boolean admin;
 
     public User() {
-        this.isBlocked = false;
+        this.blocked = false;
     }
 
     public int getId() {
@@ -74,19 +74,19 @@ public class User implements Entity {
     }
 
     public boolean isBlocked() {
-        return isBlocked;
+        return blocked;
     }
 
     public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
+        this.blocked = blocked;
     }
 
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     @Override
@@ -96,8 +96,8 @@ public class User implements Entity {
         User user = (User) o;
         return id == user.id &&
                 loyaltyPoints == user.loyaltyPoints &&
-                isBlocked == user.isBlocked &&
-                isAdmin == user.isAdmin &&
+                blocked == user.blocked &&
+                admin == user.admin &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(surname, user.surname) &&
@@ -108,7 +108,7 @@ public class User implements Entity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, email, password, surname, firstName, account, loyaltyPoints, isBlocked, isAdmin);
+        return Objects.hash(id, email, password, surname, firstName, account, loyaltyPoints, blocked, admin);
     }
 
     @Override
@@ -121,8 +121,8 @@ public class User implements Entity {
                 ", firstName='" + firstName + '\'' +
                 ", account='" + account + '\'' +
                 ", loyaltyPoints=" + loyaltyPoints +
-                ", isBlocked=" + isBlocked +
-                ", isAdmin=" + isAdmin +
+                ", blocked=" + blocked +
+                ", admin=" + admin +
                 '}';
     }
 }

@@ -19,12 +19,16 @@ public class ProductDAO extends AbstractDAO<Product>{
     private final static String SELECT_PRODUCT_BY_ID_SQL =
             "SELECT * FROM products WHERE id = ?";
 
+    private final static String SELECT_PRODUCT_BY_CATEGORY_SQL =
+            "SELECT * FROM products WHERE category = ?";
+
+
     private static final String UPDATE_PRODUCT =
-            "UPDATE products SET name = ?, price = ?, rating = ?, inStock = ? WHERE id = ?";
+            "UPDATE products SET name = ?, price = ?, rating = ?, inStock = ?, category = ? WHERE id = ?";
 
     private final static String INSERT_PRODUCT_SQL =
-            "INSERT INTO products (name, price, rating, inStock, img)" +
-                    "VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO products (name, price, rating, inStock, img, category)" +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
 
 
     public ProductDAO(Connection connection) {
@@ -60,6 +64,20 @@ public class ProductDAO extends AbstractDAO<Product>{
         }
     }
 
+    public List<Product> findEntityByCategory(String category) throws DAOException{
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_CATEGORY_SQL)){
+            List<Product> products = new ArrayList<>();
+            ps.setString(1, category);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                products.add(makeEntity(rs));
+            }
+            return products;
+        }catch (SQLException e){
+            throw new DAOException("Problem when trying to find product by category", e);
+        }
+    }
+
     private Product makeEntity(ResultSet rs) throws SQLException {
         Product product = new Product();
         product.setId(rs.getInt("id"));
@@ -68,6 +86,7 @@ public class ProductDAO extends AbstractDAO<Product>{
         product.setRating(rs.getDouble("rating"));
         product.setInStock(rs.getBoolean("inStock"));
         product.setImg(rs.getString("img"));
+        product.setCategory(rs.getString("category"));
         return product;
     }
 
@@ -78,7 +97,8 @@ public class ProductDAO extends AbstractDAO<Product>{
             ps.setBigDecimal(2, product.getPrice());
             ps.setDouble(3, product.getRating());
             ps.setBoolean(4, product.isInStock());
-            ps.setInt(5, id);
+            ps.setString(5, product.getCategory());
+            ps.setInt(6, id);
             ps.executeUpdate();
         }catch (SQLException e){
             throw new DAOException("Problem when trying to update product by id", e);
@@ -93,6 +113,7 @@ public class ProductDAO extends AbstractDAO<Product>{
             ps.setDouble(3, product.getRating());
             ps.setBoolean(4, product.isInStock());
             ps.setString(5, product.getImg());
+            ps.setString(6, product.getCategory());
             ps.executeUpdate();
 
         }catch (SQLException e){

@@ -42,5 +42,6 @@
 <div>
     <button onclick="location.href='/online-shop'">Back to main</button>
 </div>
+<jsp:include page="/jsp/include/footer.jsp" />
 </body>
 </html>

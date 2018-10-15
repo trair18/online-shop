@@ -20,10 +20,15 @@ public class UserDAO extends AbstractDAO<User>{
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private final static String SELECT_USER_BY_ID_SQL =
             "SELECT * FROM users WHERE id = ?";
+    private final static String SELECT_USER_BY_EMAIL =
+            "SELECT * FROM users WHERE email = ?";
     private final static String SELECT_ALL_USERS =
             "SELECT * FROM users";
     private static final String UPDATE_USER =
             "UPDATE users SET email = ?, password = ?, firstName = ?, surname = ?, account = ?, loyaltyPoints = ?, isBlocked = ? WHERE id = ?";
+
+    private static final String UPDATE_USER_FROM_ADMIN =
+            "UPDATE users SET isAdmin = ?, loyaltyPoints = ?, isBlocked = ? WHERE id = ?";
 
 
     public UserDAO(Connection connection) {
@@ -55,6 +60,18 @@ public class UserDAO extends AbstractDAO<User>{
             return makeEntity(rs);
         }catch (SQLException e){
             throw new DAOException("Problem when trying to find user by id", e);
+        }
+    }
+
+    public User findEntityByEmail(String email) throws DAOException{
+
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_EMAIL)){
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return makeEntity(rs);
+        }catch (SQLException e){
+            throw new DAOException("Problem when trying to find user by email", e);
         }
     }
 
@@ -104,7 +121,24 @@ public class UserDAO extends AbstractDAO<User>{
             ps.executeUpdate();
 
         }catch (SQLException e){
+            System.out.println(e);
             throw new DAOException("Problem when trying to update user by id", e);
         }
     }
+
+    public void updateFromAdmin(int id, User user) throws DAOException{
+        try (PreparedStatement ps = connection.prepareStatement(UPDATE_USER_FROM_ADMIN)) {
+            ps.setBoolean(1, user.isAdmin());
+            ps.setInt(2, user.getLoyaltyPoints());
+            ps.setBoolean(3, user.isBlocked());
+            ps.setInt(4, id);
+            ps.executeUpdate();
+
+        }catch (SQLException e){
+            System.out.println(e);
+            throw new DAOException("Problem when trying to update user by id", e);
+        }
+    }
+
+
 }

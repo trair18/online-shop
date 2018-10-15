@@ -10,6 +10,7 @@ public class Product implements Entity {
     private double rating;
     private boolean inStock;
     private String img;
+    private String category;
 
     public Product() {
     }
@@ -62,6 +63,14 @@ public class Product implements Entity {
         this.img = img;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,13 +81,14 @@ public class Product implements Entity {
                 inStock == product.inStock &&
                 Objects.equals(name, product.name) &&
                 Objects.equals(price, product.price) &&
-                Objects.equals(img, product.img);
+                Objects.equals(img, product.img) &&
+                Objects.equals(category, product.category);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, price, rating, inStock, img);
+        return Objects.hash(id, name, price, rating, inStock, img, category);
     }
 
     @Override
@@ -89,6 +99,8 @@ public class Product implements Entity {
                 ", price=" + price +
                 ", rating=" + rating +
                 ", inStock=" + inStock +
+                ", img='" + img + '\'' +
+                ", category='" + category + '\'' +
                 '}';
     }
 }
