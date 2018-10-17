@@ -1,5 +1,6 @@
 package com.gmail.trair8.entity;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class User implements Entity {
@@ -8,7 +9,7 @@ public class User implements Entity {
     private String password;
     private String surname;
     private String firstName;
-    private String account;
+    private BigDecimal account;
     private int loyaltyPoints;
     private boolean blocked;
     private boolean admin;
@@ -57,11 +58,11 @@ public class User implements Entity {
         this.firstName = firstName;
     }
 
-    public String getAccount() {
+    public BigDecimal getAccount() {
         return account;
     }
 
-    public void setAccount(String account) {
+    public void setAccount(BigDecimal account) {
         this.account = account;
     }
 
@@ -119,7 +120,7 @@ public class User implements Entity {
                 ", password='" + password + '\'' +
                 ", surname='" + surname + '\'' +
                 ", firstName='" + firstName + '\'' +
-                ", account='" + account + '\'' +
+                ", account=" + account +
                 ", loyaltyPoints=" + loyaltyPoints +
                 ", blocked=" + blocked +
                 ", admin=" + admin +

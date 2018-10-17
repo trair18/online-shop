@@ -1,12 +1,15 @@
 package com.gmail.trair8.dao;
 
-import com.gmail.trair8.hash.BCryptHash;
 import com.gmail.trair8.entity.User;
-import com.gmail.trair8.exception.DAOException;
+import com.gmail.trair8.exception.OnlineShopException;
+import com.gmail.trair8.hash.BCryptHash;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +39,7 @@ public class UserDAO extends AbstractDAO<User>{
     }
 
     @Override
-    public List<User> findAll() throws DAOException{
+    public List<User> findAll() {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_USERS)){
             List<User> clients = new ArrayList<>();
 
@@ -46,12 +49,12 @@ public class UserDAO extends AbstractDAO<User>{
             }
             return clients;
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find all users", e);
+            throw new OnlineShopException("Problem when trying to find all users", e);
         }
     }
 
     @Override
-    public User findEntityById(int id) throws DAOException{
+    public User findEntityById(int id) {
 
         try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_ID_SQL)){
             ps.setInt(1, id);
@@ -59,19 +62,21 @@ public class UserDAO extends AbstractDAO<User>{
             rs.next();
             return makeEntity(rs);
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find user by id", e);
+            throw new OnlineShopException("Problem when trying to find user by id", e);
         }
     }
 
-    public User findEntityByEmail(String email) throws DAOException{
+    public User findEntityByEmail(String email) {
 
         try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_EMAIL)){
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-            rs.next();
+            if (!rs.next()){
+                return null;
+            }
             return makeEntity(rs);
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find user by email", e);
+            throw new OnlineShopException("Problem when trying to find user by email", e);
         }
     }
 
@@ -82,7 +87,7 @@ public class UserDAO extends AbstractDAO<User>{
         client.setPassword(rs.getString("password"));
         client.setFirstName(rs.getString("firstName"));
         client.setSurname(rs.getString("surname"));
-        client.setAccount(rs.getString("account"));
+        client.setAccount(rs.getBigDecimal("account"));
         client.setLoyaltyPoints(rs.getInt("loyaltyPoints"));
         client.setBlocked(rs.getBoolean("isBlocked"));
         client.setAdmin(rs.getBoolean("isAdmin"));
@@ -90,31 +95,31 @@ public class UserDAO extends AbstractDAO<User>{
     }
 
     @Override
-    public void insert(User user) throws DAOException{
+    public void insert(User user) {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_USER_SQL)){
             ps.setString(1, user.getEmail());
             ps.setString(2, BCryptHash.hashPassword(user.getPassword()));
             ps.setBoolean(3, user.isAdmin());
             ps.setString(4, user.getFirstName());
             ps.setString(5, user.getSurname());
-            ps.setString(6, user.getAccount());
+            ps.setBigDecimal(6, user.getAccount());
             ps.setInt(7, user.getLoyaltyPoints());
             ps.setBoolean(8, user.isBlocked());
             ps.executeUpdate();
 
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to insert user", e);
+            throw new OnlineShopException("Problem when trying to insert user", e);
         }
     }
 
     @Override
-    public void update(int id, User user) throws DAOException{
+    public void update(int id, User user) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_USER)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, BCryptHash.hashPassword(user.getPassword()));
             ps.setString(3, user.getFirstName());
             ps.setString(4, user.getSurname());
-            ps.setString(5, user.getAccount());
+            ps.setBigDecimal(5, user.getAccount());
             ps.setInt(6, user.getLoyaltyPoints());
             ps.setBoolean(7, user.isBlocked());
             ps.setInt(8, id);
@@ -122,11 +127,11 @@ public class UserDAO extends AbstractDAO<User>{
 
         }catch (SQLException e){
             System.out.println(e);
-            throw new DAOException("Problem when trying to update user by id", e);
+            throw new OnlineShopException("Problem when trying to update user by id", e);
         }
     }
 
-    public void updateFromAdmin(int id, User user) throws DAOException{
+    public void updateFromAdmin(int id, User user) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_USER_FROM_ADMIN)) {
             ps.setBoolean(1, user.isAdmin());
             ps.setInt(2, user.getLoyaltyPoints());
@@ -136,7 +141,7 @@ public class UserDAO extends AbstractDAO<User>{
 
         }catch (SQLException e){
             System.out.println(e);
-            throw new DAOException("Problem when trying to update user by id", e);
+            throw new OnlineShopException("Problem when trying to update user by id", e);
         }
     }
 

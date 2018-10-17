@@ -3,8 +3,7 @@ package com.gmail.trair8.service;
 import com.gmail.trair8.connectionpool.ConnectionPool;
 import com.gmail.trair8.dao.ProductDAO;
 import com.gmail.trair8.entity.Product;
-import com.gmail.trair8.exception.ConnectionPoolException;
-import com.gmail.trair8.exception.DAOException;
+import com.gmail.trair8.exception.OnlineShopException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +18,7 @@ public class ProductService {
 
     public List<Product> findCartProd(List<Integer> list){
         List<Product> products = new ArrayList<>();
-        try {
+
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
@@ -30,45 +29,30 @@ public class ProductService {
             }
             connectionPool.closeConnection(cn);
 
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
         return products;
     }
 
     public List<Product> findAll(){
-        List<Product> products = new ArrayList<>();
-        try {
+        List<Product> products;
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
             ProductDAO productDAO = new ProductDAO(cn);
             products = productDAO.findAll();
             connectionPool.closeConnection(cn);
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
+
         return products;
     }
 
     public List<Product> findByCategory(String category){
-        List<Product> products = new ArrayList<>();
-        try {
+        List<Product> products;
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
             ProductDAO productDAO = new ProductDAO(cn);
             products = productDAO.findEntityByCategory(category);
             connectionPool.closeConnection(cn);
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
+
         return products;
     }
 
@@ -84,12 +68,9 @@ public class ProductService {
             cn.commit();
             connectionPool.closeConnection(cn);
 
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
         }  catch (SQLException e) {
             LOGGER.error(e);
-        } catch (DAOException e){
-            System.out.println(e);
+            throw new OnlineShopException(e);
         }
     }
 
@@ -106,29 +87,22 @@ public class ProductService {
             cn.commit();
             connectionPool.closeConnection(cn);
 
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
         }  catch (SQLException e) {
             LOGGER.error(e);
-        } catch (DAOException e){
-            System.out.println(e);
+            throw new OnlineShopException(e);
         }
     }
 
     public Product findProductById(int id){
-        Product product = new Product();
-        try {
+        Product product;
+
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
             ProductDAO productDAO = new ProductDAO(cn);
             product = productDAO.findEntityById(id);
             connectionPool.closeConnection(cn);
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
+
         return product;
     }
 

@@ -22,77 +22,77 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <fmt:message key="navbar.catalog.title"/>
+                    <fmt:message key="text.catalog.title"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#"><fmt:message key="navbar.catalog.clothes"/></a>
-                    <a class="dropdown-item" href="/online-shop/product/sneakers"><fmt:message key="navbar.catalog.sneakers"/></a>
-                    <a class="dropdown-item" href="#"><fmt:message key="navbar.catalog.accessories"/></a>
+                    <a class="dropdown-item" href="#"><fmt:message key="text.catalog.clothes"/></a>
+                    <a class="dropdown-item" href="/online-shop/product/sneakers"><fmt:message key="text.catalog.sneakers"/></a>
+                    <a class="dropdown-item" href="#"><fmt:message key="text.catalog.accessories"/></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#"><fmt:message key="navbar.catalog.sales"/></a>
+                    <a class="dropdown-item" href="#"><fmt:message key="text.catalog.sales"/></a>
                 </div>
             </li>
 
         </ul>
 
         <c:if test="${!role.equals('admin')}">
-            <a class="button" href="/online-shop/product/cart">Корзина</a>
+            <a class="button" href="/online-shop/product/cart"> <fmt:message key="text.cart.title"/></a>
         </c:if>
     <c:choose>
         <c:when test="${role.equals('client')}">
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Профиль
+                    <fmt:message key="text.user.profile"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Мои Данные</a>
-                    <a class="dropdown-item" href="/online-shop/order/myOrders">Мои Заказы</a>
+                    <a class="dropdown-item" href="#"><fmt:message key="text.user.myInformation"/></a>
+                    <a class="dropdown-item" href="/online-shop/order/myOrders"><fmt:message key="text.user.myOrders"/></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/online-shop/user/signout" >Выйти</a>
+                    <a class="dropdown-item" href="/online-shop/user/signout" ><fmt:message key="text.user.signOut"/></a>
                 </div>
             </div>
         </c:when>
         <c:when test="${role.equals('admin')}">
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Инфо
+                    <fmt:message key="text.admin.info"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-                    <a class="dropdown-item" href="/online-shop/product/addProductForm">Добавить товар</a>
-                    <a class="dropdown-item" href="/online-shop/user/allUsers">Пользователи</a>
-                    <a class="dropdown-item" href="/online-shop/order/allOrders">Заказы</a>
+                    <a class="dropdown-item" href="/online-shop/product/addProductForm"><fmt:message key="text.admin.addProduct"/></a>
+                    <a class="dropdown-item" href="/online-shop/user/allUsers"><fmt:message key="text.admin.users"/></a>
+                    <a class="dropdown-item" href="/online-shop/order/allOrders"><fmt:message key="text.admin.orders"/></a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/online-shop/user/signout" >Выйти</a>
+                    <a class="dropdown-item" href="/online-shop/user/signout" ><fmt:message key="text.user.signOut"/></a>
                 </div>
             </div>
         </c:when>
         <c:otherwise>
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Log in
+                    <fmt:message key="text.SingIn.title"/>
                 </a>
                 <div class="dropdown-menu">
                     <form class="px-4 py-3" action="/online-shop/user/signin" method="POST">
                         <div class="form-group">
-                            <label for="exampleDropdownFormEmail1"><fmt:message key="login.email"/> </label>
+                            <label for="exampleDropdownFormEmail1"><fmt:message key="text.SingIn.email"/> </label>
                             <input name="email" type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
                         </div>
                         <div class="form-group">
-                            <label for="exampleDropdownFormPassword1">Password</label>
-                            <input name="password" type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
+                            <label for="exampleDropdownFormPassword1"><fmt:message key="text.SingIn.password"/></label>
+                            <input name="password" type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="<fmt:message key="text.SingIn.passwordPlaceholder"/>">
                         </div>
-                        <div class="form-check">
+                        <%--<div class="form-check">
                             <input type="checkbox" class="form-check-input" id="dropdownCheck">
                             <label class="form-check-label" for="dropdownCheck">
                                 Remember me
                             </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Sign in</button>
+                        </div>--%>
+                        <button type="submit" class="btn btn-primary"><fmt:message key="text.SingIn.button"/></button>
                         <input name="currentReq" hidden="true" value="${pageContext.request.requestURI}"/>
                     </form>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/online-shop/user/signup">New around here? Sign up</a>
-                    <a class="dropdown-item" href="#">Forgot password?</a>
+                    <a class="dropdown-item" href="/online-shop/user/signup"><fmt:message key="text.SignIn.registration"/></a>
+                    <a class="dropdown-item" href="#"><fmt:message key="text.SignIn.forgotPassword"/></a>
                 </div>
             </div>
         </c:otherwise>

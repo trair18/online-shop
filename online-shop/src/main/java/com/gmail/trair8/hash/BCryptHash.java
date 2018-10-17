@@ -6,21 +6,21 @@ public class BCryptHash {
 
     private static int workload = 12;
 
-    public static String hashPassword(String password_plaintext) {
+    public static String hashPassword(String passwordPlaintext) {
         String salt = BCrypt.gensalt(workload);
-        String hashed_password = BCrypt.hashpw(password_plaintext, salt);
+        String hashedPassword = BCrypt.hashpw(passwordPlaintext, salt);
 
-        return(hashed_password);
+        return(hashedPassword);
     }
 
-    public static boolean checkPassword(String password_plaintext, String stored_hash) {
-        boolean password_verified = false;
+    public static boolean checkPassword(String passwordPlaintext, String storedHash) {
+        boolean passwordVerified = false;
 
-        if(null == stored_hash || !stored_hash.startsWith("$2a$"))
+        if(null == storedHash || !storedHash.startsWith("$2a$"))
             throw new IllegalArgumentException("Invalid hash provided for comparison");
 
-        password_verified = BCrypt.checkpw(password_plaintext, stored_hash);
+        passwordVerified = BCrypt.checkpw(passwordPlaintext, storedHash);
 
-        return(password_verified);
+        return(passwordVerified);
     }
 }

@@ -2,6 +2,8 @@ package com.gmail.trair8.entity;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Order implements Entity{
     private int id;
@@ -122,4 +124,5 @@ public class Order implements Entity{
                 ", time=" + time +
                 '}';
     }
+
 }

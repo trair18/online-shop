@@ -1,5 +1,6 @@
 package com.gmail.trair8.connectionpool;
 
+import com.gmail.trair8.exception.OnlineShopException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +17,7 @@ public class ConnectionProducer {
 
     private Properties configProp;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/cafe?autoReconnect=true&useSSL=false";
+    private static final String URL = "jdbc:mysql://localhost:3306/cafe?useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "artem7102565";
     private static final String AUTO_RECONNECT = "true";
@@ -38,7 +39,7 @@ public class ConnectionProducer {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
         } catch (SQLException e) {
             LOGGER.fatal("Problem with DriverManager registration", e);
-            throw new RuntimeException(e);
+            throw new OnlineShopException(e);
         }
     }
 

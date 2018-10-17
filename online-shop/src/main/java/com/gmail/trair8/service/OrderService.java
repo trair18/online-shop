@@ -2,11 +2,8 @@ package com.gmail.trair8.service;
 
 import com.gmail.trair8.connectionpool.ConnectionPool;
 import com.gmail.trair8.dao.OrderDAO;
-import com.gmail.trair8.dao.ProductDAO;
 import com.gmail.trair8.entity.Order;
-import com.gmail.trair8.entity.Product;
-import com.gmail.trair8.exception.ConnectionPoolException;
-import com.gmail.trair8.exception.DAOException;
+import com.gmail.trair8.exception.OnlineShopException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,18 +31,14 @@ public class OrderService {
             cn.commit();
             connectionPool.closeConnection(cn);
 
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
         }  catch (SQLException e) {
             LOGGER.error(e);
-        } catch (DAOException e){
-            System.out.println(e);
+            throw new OnlineShopException(e);
         }
     }
 
     public List<Order> findOrders(int id){
-        List<Order> orders = new ArrayList<>();
-        try {
+
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
@@ -55,28 +48,17 @@ public class OrderService {
             return orderDAO.findOrderByUserId(id);
 
 
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
-        return orders;
     }
 
     public List<Order> findAll(){
         List<Order> orders = new ArrayList<>();
-        try {
             ConnectionPool connectionPool = ConnectionPool.getInstance();
             Connection cn = connectionPool.takeConnection();
 
             OrderDAO orderDAO = new OrderDAO(cn);
             orders = orderDAO.findAll();
             connectionPool.closeConnection(cn);
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
-        } catch (DAOException e) {
-            LOGGER.error(e);
-        }
+
         return orders;
     }
 
@@ -92,12 +74,9 @@ public class OrderService {
             cn.commit();
             connectionPool.closeConnection(cn);
 
-        } catch (ConnectionPoolException e) {
-            LOGGER.error(e);
         }  catch (SQLException e) {
             LOGGER.error(e);
-        } catch (DAOException e){
-            System.out.println(e);
+            throw new OnlineShopException(e);
         }
     }
 

@@ -37,7 +37,7 @@ public class UserController implements Controller {
         }
 
 
-        return "/jsp/userpage.jsp";
+        return "/jsp/enter.jsp";
     }
 
     @RequestMappingMethod(path = "/signupform")

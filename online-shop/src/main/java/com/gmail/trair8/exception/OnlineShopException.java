@@ -1,6 +1,10 @@
 package com.gmail.trair8.exception;
 
-public class OnlineShopException extends Exception{
+public class OnlineShopException extends RuntimeException{
+
+    public OnlineShopException() {
+    }
+
     public OnlineShopException(String message) {
         super(message);
     }

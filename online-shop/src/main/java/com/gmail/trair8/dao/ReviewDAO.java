@@ -1,8 +1,7 @@
 package com.gmail.trair8.dao;
 
-import com.gmail.trair8.entity.Order;
 import com.gmail.trair8.entity.Review;
-import com.gmail.trair8.exception.DAOException;
+import com.gmail.trair8.exception.OnlineShopException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,7 +30,7 @@ public class ReviewDAO extends AbstractDAO <Review>{
     }
 
     @Override
-    public List<Review> findAll() throws DAOException {
+    public List<Review> findAll() {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_REVIEWS)){
             List<Review> reviews = new ArrayList<>();
 
@@ -41,19 +40,19 @@ public class ReviewDAO extends AbstractDAO <Review>{
             }
             return reviews;
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find all reviews", e);
+            throw new OnlineShopException("Problem when trying to find all reviews", e);
         }
     }
 
     @Override
-    public Review findEntityById(int id) throws DAOException{
+    public Review findEntityById(int id) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_REVIEW_BY_ID_SQL)){
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             rs.next();
             return makeEntity(rs);
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find review by id", e);
+            throw new OnlineShopException("Problem when trying to find review by id", e);
         }
     }
 
@@ -69,19 +68,19 @@ public class ReviewDAO extends AbstractDAO <Review>{
 
 
     @Override
-    public void insert(Review review) throws DAOException{
+    public void insert(Review review) {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_REVIEW_SQL)){
             ps.setInt(1, review.getUserId());
             ps.setInt(2, review.getProductId());
             ps.setString(3, review.getText());
             ps.executeUpdate();
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to insert review", e);
+            throw new OnlineShopException("Problem when trying to insert review", e);
         }
     }
 
     @Override
-    public void update(int id, Review review) throws DAOException{
+    public void update(int id, Review review) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_REVIEW)) {
             ps.setInt(1, review.getUserId());
             ps.setInt(2, review.getProductId());
@@ -89,7 +88,7 @@ public class ReviewDAO extends AbstractDAO <Review>{
             ps.setInt(4, id);
             ps.executeUpdate();
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to update review by id", e);
+            throw new OnlineShopException("Problem when trying to update review by id", e);
         }
     }
 }

@@ -2,8 +2,7 @@ package com.gmail.trair8.dao;
 
 
 import com.gmail.trair8.entity.Order;
-
-import com.gmail.trair8.exception.DAOException;
+import com.gmail.trair8.exception.OnlineShopException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +39,7 @@ public class OrderDAO extends AbstractDAO<Order>{
     }
 
     @Override
-    public List<Order> findAll() throws DAOException {
+    public List<Order> findAll(){
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_ORDERS)){
             List<Order> orders = new ArrayList<>();
 
@@ -50,23 +49,23 @@ public class OrderDAO extends AbstractDAO<Order>{
             }
             return orders;
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find all orders", e);
+            throw new OnlineShopException("Problem when trying to find all orders", e);
         }
     }
 
     @Override
-    public Order findEntityById(int id) throws DAOException{
+    public Order findEntityById(int id){
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDER_BY_ID_SQL)){
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             rs.next();
             return makeEntity(rs);
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find order by id", e);
+            throw new OnlineShopException("Problem when trying to find order by id", e);
         }
     }
 
-    public List<Order> findOrderByUserId(int userId) throws DAOException{
+    public List<Order> findOrderByUserId(int userId){
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDERS_BY_USER_ID_SQL)){
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
@@ -76,7 +75,7 @@ public class OrderDAO extends AbstractDAO<Order>{
             }
             return orderList;
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to find order by user id", e);
+            throw new OnlineShopException("Problem when trying to find order by user id", e);
         }
     }
 
@@ -95,7 +94,7 @@ public class OrderDAO extends AbstractDAO<Order>{
     }
 
     @Override
-    public void insert(Order order) throws DAOException{
+    public void insert(Order order){
         try (PreparedStatement ps = connection.prepareStatement(INSERT_ORDER_SQL)){
             ps.setInt(1, order.getUserId());
             ps.setInt(2, order.getProductId());
@@ -105,12 +104,12 @@ public class OrderDAO extends AbstractDAO<Order>{
             ps.setLong(6, order.getTime().getTime());
             ps.executeUpdate();
         }catch (SQLException e){
-            System.out.println(e);
+            throw new OnlineShopException(e);
         }
     }
 
     @Override
-    public void update(int id, Order order) throws DAOException{
+    public void update(int id, Order order){
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_ORDER)) {
             ps.setInt(1, order.getUserId());
             ps.setInt(2, order.getProductId());
@@ -121,18 +120,18 @@ public class OrderDAO extends AbstractDAO<Order>{
             ps.setInt(7, id);
             ps.executeUpdate();
         }catch (SQLException e){
-            throw new DAOException("Problem when trying to update order by id", e);
+            throw new OnlineShopException("Problem when trying to update order by id", e);
         }
     }
 
 
-    public void updateActual(int id, boolean actual) throws DAOException{
+    public void updateActual(int id, boolean actual){
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_ACTUAL)) {
             ps.setBoolean(1, actual);
             ps.setInt(2, id);
             ps.executeUpdate();
         }catch (SQLException e){
-            System.out.println(e);
+            throw new OnlineShopException(e);
         }
     }
 
