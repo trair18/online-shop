@@ -14,103 +14,84 @@ import java.util.List;
 
 public class UserService {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(UserService.class);
 
-    public void signUp(User user){
-        try {
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
+    public void signUp(User user) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()){
             cn.setAutoCommit(false);
 
             UserDAO userDAO = new UserDAO(cn);
             userDAO.insert(user);
 
             cn.commit();
-
-            connectionPool.closeConnection(cn);
-
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new OnlineShopException(e);
         }
     }
 
-    public boolean CheckIsFreeEmail(String email) {
-
-        ConnectionPool connectionPool = ConnectionPool.getInstance();
-        Connection cn = connectionPool.takeConnection();
-
-        UserDAO userDAO = new UserDAO(cn);
-        List<User> users = userDAO.findAll();
-        connectionPool.closeConnection(cn);
-
-        for (User user : users) {
-            if (user.getEmail().equals(email)) {
-                return false;
-            }
+    public boolean checkIsFreeEmail(String email) {
+        try(Connection cn = ConnectionPool.getInstance().takeConnection()){
+            UserDAO userDAO = new UserDAO(cn);
+            User user = userDAO.findEntityByEmail(email);
+            return user == null;
+        }catch (SQLException e){
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
         }
 
-        return true;
     }
 
     public User signIn(String email, String password) {
 
-
-        ConnectionPool connectionPool = ConnectionPool.getInstance();
-        Connection cn = connectionPool.takeConnection();
-        UserDAO userDAO = new UserDAO(cn);
-        User user = userDAO.findEntityByEmail(email);
-        connectionPool.closeConnection(cn);
-        if (user != null) {
-            if (BCryptHash.checkPassword(password, user.getPassword())) {
-                return user;
+        try(Connection cn = ConnectionPool.getInstance().takeConnection()) {
+            UserDAO userDAO = new UserDAO(cn);
+            User user = userDAO.findEntityByEmail(email);
+            if (user != null) {
+                if (BCryptHash.checkPassword(password, user.getPassword())) {
+                    return user;
+                }
             }
+            return null;
+        }catch (SQLException e){
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
         }
-
-        return null;
     }
 
-    public int findId(String email) {
-        ConnectionPool connectionPool = ConnectionPool.getInstance();
-        Connection cn = connectionPool.takeConnection();
-        UserDAO userDAO = new UserDAO(cn);
-        User user = userDAO.findEntityByEmail(email);
-        connectionPool.closeConnection(cn);
-        if (user != null) {
-            return user.getId();
+    public User findUserByEmail(String email) {
+        try(Connection cn = ConnectionPool.getInstance().takeConnection()) {
+            UserDAO userDAO = new UserDAO(cn);
+            return userDAO.findEntityByEmail(email);
+        }catch (SQLException e){
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
         }
-        throw new OnlineShopException();
 
     }
 
     public List<User> findAll() {
-        List<User> users;
-
-        ConnectionPool connectionPool = ConnectionPool.getInstance();
-        Connection cn = connectionPool.takeConnection();
-
-        UserDAO userDAO = new UserDAO(cn);
-        users = userDAO.findAll();
-        connectionPool.closeConnection(cn);
-
-        return users;
+        try(Connection cn = ConnectionPool.getInstance().takeConnection()) {
+            UserDAO userDAO = new UserDAO(cn);
+            return userDAO.findAll();
+        }catch (SQLException e){
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
+        }
     }
 
 
-    public void updateUserFromAdmin(int id, User user){
-        try {
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
+    public void updateUserFromAdmin(int id, User user) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             cn.setAutoCommit(false);
 
             UserDAO userDAO = new UserDAO(cn);
             userDAO.updateFromAdmin(id, user);
 
             cn.commit();
-            connectionPool.closeConnection(cn);
-
-        }  catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.error(e);
+            throw new OnlineShopException(e);
         }
     }
 

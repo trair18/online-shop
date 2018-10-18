@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UserDAO extends AbstractDAO<User>{
+public class UserDAO extends AbstractDAO<User> {
 
-    private final static Logger LOGGER = LogManager.getLogger();
+    private final static Logger LOGGER = LogManager.getLogger(UserDAO.class);
 
     private final static String INSERT_USER_SQL =
             "INSERT INTO users (email, password, isAdmin, firstName, surname, account, loyaltyPoints, isBlocked)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private final static String SELECT_USER_BY_ID_SQL =
             "SELECT * FROM users WHERE id = ?";
     private final static String SELECT_USER_BY_EMAIL =
@@ -40,15 +40,16 @@ public class UserDAO extends AbstractDAO<User>{
 
     @Override
     public List<User> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_USERS)){
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_USERS)) {
             List<User> clients = new ArrayList<>();
 
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 clients.add(makeEntity(rs));
             }
             return clients;
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find all users", e);
             throw new OnlineShopException("Problem when trying to find all users", e);
         }
     }
@@ -56,26 +57,28 @@ public class UserDAO extends AbstractDAO<User>{
     @Override
     public User findEntityById(int id) {
 
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_ID_SQL)){
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             rs.next();
             return makeEntity(rs);
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find user by id", e);
             throw new OnlineShopException("Problem when trying to find user by id", e);
         }
     }
 
     public User findEntityByEmail(String email) {
 
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_EMAIL)){
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_EMAIL)) {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
-            if (!rs.next()){
+            if (!rs.next()) {
                 return null;
             }
             return makeEntity(rs);
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find user by email", e);
             throw new OnlineShopException("Problem when trying to find user by email", e);
         }
     }
@@ -96,7 +99,7 @@ public class UserDAO extends AbstractDAO<User>{
 
     @Override
     public void insert(User user) {
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_USER_SQL)){
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_USER_SQL)) {
             ps.setString(1, user.getEmail());
             ps.setString(2, BCryptHash.hashPassword(user.getPassword()));
             ps.setBoolean(3, user.isAdmin());
@@ -107,7 +110,8 @@ public class UserDAO extends AbstractDAO<User>{
             ps.setBoolean(8, user.isBlocked());
             ps.executeUpdate();
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to insert user", e);
             throw new OnlineShopException("Problem when trying to insert user", e);
         }
     }
@@ -125,8 +129,8 @@ public class UserDAO extends AbstractDAO<User>{
             ps.setInt(8, id);
             ps.executeUpdate();
 
-        }catch (SQLException e){
-            System.out.println(e);
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to update user by id", e);
             throw new OnlineShopException("Problem when trying to update user by id", e);
         }
     }
@@ -139,8 +143,8 @@ public class UserDAO extends AbstractDAO<User>{
             ps.setInt(4, id);
             ps.executeUpdate();
 
-        }catch (SQLException e){
-            System.out.println(e);
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to update user by id", e);
             throw new OnlineShopException("Problem when trying to update user by id", e);
         }
     }

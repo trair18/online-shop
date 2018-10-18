@@ -75,11 +75,11 @@
                     <form class="px-4 py-3" action="/online-shop/user/signin" method="POST">
                         <div class="form-group">
                             <label for="exampleDropdownFormEmail1"><fmt:message key="text.SingIn.email"/> </label>
-                            <input name="email" type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
+                            <input name="email" type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com" pattern="\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+">
                         </div>
                         <div class="form-group">
                             <label for="exampleDropdownFormPassword1"><fmt:message key="text.SingIn.password"/></label>
-                            <input name="password" type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="<fmt:message key="text.SingIn.passwordPlaceholder"/>">
+                            <input name="password" type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="<fmt:message key="text.SingIn.passwordPlaceholder"/>" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{6,25}$">
                         </div>
                         <%--<div class="form-check">
                             <input type="checkbox" class="form-check-input" id="dropdownCheck">

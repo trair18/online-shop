@@ -2,11 +2,9 @@ package com.gmail.trair8.entity;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Order implements Entity{
-    private int id;
+public class Order extends Entity{
+
     private int userId;
     private int productId;
     private boolean actual;
@@ -17,31 +15,14 @@ public class Order implements Entity{
     public Order() {
     }
 
-    public Order(int userId, int productId, boolean isActual, String address, String payment, Date time) {
+    public Order(int id, int userId, int productId, boolean actual, String address, String payment, Date time) {
+        super(id);
         this.userId = userId;
         this.productId = productId;
-        this.actual = isActual;
+        this.actual = actual;
         this.address = address;
         this.payment = payment;
         this.time = time;
-    }
-
-    public Order(int id, int userId, int productId, boolean isActual, String address, String payment, Date time) {
-        this.id = id;
-        this.userId = userId;
-        this.productId = productId;
-        this.actual = isActual;
-        this.address = address;
-        this.payment = payment;
-        this.time = time;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getUserId() {
@@ -96,9 +77,9 @@ public class Order implements Entity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Order order = (Order) o;
-        return id == order.id &&
-                userId == order.userId &&
+        return userId == order.userId &&
                 productId == order.productId &&
                 actual == order.actual &&
                 Objects.equals(address, order.address) &&
@@ -109,20 +90,19 @@ public class Order implements Entity{
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, userId, productId, actual, address, payment, time);
+        return Objects.hash(super.hashCode(), userId, productId, actual, address, payment, time);
     }
 
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + id +
-                ", userId=" + userId +
+                "userId=" + userId +
                 ", productId=" + productId +
                 ", actual=" + actual +
                 ", address='" + address + '\'' +
                 ", payment='" + payment + '\'' +
                 ", time=" + time +
+                ", id=" + id +
                 '}';
     }
-
 }

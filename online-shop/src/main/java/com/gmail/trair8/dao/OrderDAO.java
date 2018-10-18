@@ -3,16 +3,18 @@ package com.gmail.trair8.dao;
 
 import com.gmail.trair8.entity.Order;
 import com.gmail.trair8.exception.OnlineShopException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-public class OrderDAO extends AbstractDAO<Order>{
+public class OrderDAO extends AbstractDAO<Order> {
+
+    private final static Logger LOGGER = LogManager.getLogger(ProductDAO.class);
 
     private final static String SELECT_ALL_ORDERS =
             "SELECT * FROM orders";
@@ -32,53 +34,55 @@ public class OrderDAO extends AbstractDAO<Order>{
 
 
     private final static String SELECT_ORDERS_BY_USER_ID_SQL =
-            "SELECT * FROM orders WHERE User_id = ?";
+            "SELECT  name, orders.id, User_id, Product_id, isActual, address, payment, time FROM cafe.orders LEFT JOIN cafe.products ON orders.Product_id = products.id WHERE User_id = ?";
 
     public OrderDAO(Connection connection) {
         super(connection);
     }
 
     @Override
-    public List<Order> findAll(){
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_ORDERS)){
+    public List<Order> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_ORDERS)) {
             List<Order> orders = new ArrayList<>();
 
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 orders.add(makeEntity(rs));
             }
             return orders;
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find all orders", e);
             throw new OnlineShopException("Problem when trying to find all orders", e);
         }
     }
 
     @Override
-    public Order findEntityById(int id){
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDER_BY_ID_SQL)){
+    public Order findEntityById(int id) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDER_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             rs.next();
             return makeEntity(rs);
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find order by id", e);
             throw new OnlineShopException("Problem when trying to find order by id", e);
         }
     }
 
-    public List<Order> findOrderByUserId(int userId){
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDERS_BY_USER_ID_SQL)){
+    public Map<Order, String> findOrderByUserId(int userId) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ORDERS_BY_USER_ID_SQL)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-            List<Order> orderList = new ArrayList<Order>();
-            while (rs.next()){
-                orderList.add(makeEntity(rs));
+            Map<Order, String> map = new HashMap<>();
+            while (rs.next()) {
+                map.put(makeEntity(rs), rs.getString("name"));
             }
-            return orderList;
-        }catch (SQLException e){
+            return map;
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find order by user id", e);
             throw new OnlineShopException("Problem when trying to find order by user id", e);
         }
     }
-
 
 
     private Order makeEntity(ResultSet rs) throws SQLException {
@@ -94,8 +98,8 @@ public class OrderDAO extends AbstractDAO<Order>{
     }
 
     @Override
-    public void insert(Order order){
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_ORDER_SQL)){
+    public void insert(Order order) {
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_ORDER_SQL)) {
             ps.setInt(1, order.getUserId());
             ps.setInt(2, order.getProductId());
             ps.setBoolean(3, order.isActual());
@@ -103,13 +107,14 @@ public class OrderDAO extends AbstractDAO<Order>{
             ps.setString(5, order.getPayment());
             ps.setLong(6, order.getTime().getTime());
             ps.executeUpdate();
-        }catch (SQLException e){
-            throw new OnlineShopException(e);
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to insert order", e);
+            throw new OnlineShopException("Problem when trying to insert order", e);
         }
     }
 
     @Override
-    public void update(int id, Order order){
+    public void update(int id, Order order) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_ORDER)) {
             ps.setInt(1, order.getUserId());
             ps.setInt(2, order.getProductId());
@@ -119,22 +124,22 @@ public class OrderDAO extends AbstractDAO<Order>{
             ps.setLong(6, order.getTime().getTime());
             ps.setInt(7, id);
             ps.executeUpdate();
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to update order by id", e);
             throw new OnlineShopException("Problem when trying to update order by id", e);
         }
     }
 
 
-    public void updateActual(int id, boolean actual){
+    public void updateActual(int id, boolean actual) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_ACTUAL)) {
             ps.setBoolean(1, actual);
             ps.setInt(2, id);
             ps.executeUpdate();
-        }catch (SQLException e){
-            throw new OnlineShopException(e);
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to update order actual by id", e);
+            throw new OnlineShopException("Problem when trying to update order actual by id", e);
         }
     }
-
-
 
 }

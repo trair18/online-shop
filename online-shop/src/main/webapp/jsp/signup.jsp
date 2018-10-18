@@ -26,11 +26,11 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="inputEmail4">Email</label>
-                <input name="email" type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                <input name="email" type="email" class="form-control" id="inputEmail4" placeholder="Email" pattern="\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+">
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPassword4">Password</label>
-                <input name="password" type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                <input name="password" type="password" class="form-control" id="inputPassword4" placeholder="Password" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{6,25}$">
             </div>
         </div>
         <div class="form-row">
@@ -50,6 +50,9 @@
 
     <c:if test="${isFree == false}">
         Пользователь с такой почтой уже зарегестривован!
+    </c:if>
+    <c:if test="${isValid == false}">
+        Не корректо введена почта или пароль
     </c:if>
 
 

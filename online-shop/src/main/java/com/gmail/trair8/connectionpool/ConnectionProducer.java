@@ -8,33 +8,33 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
+import java.util.ResourceBundle;
 
 
 public class ConnectionProducer {
 
     private final static Logger LOGGER = LogManager.getLogger(ConnectionProducer.class);
 
+    private String url;
     private Properties configProp;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/cafe?useSSL=false";
-    private static final String USER = "root";
-    private static final String PASSWORD = "artem7102565";
-    private static final String AUTO_RECONNECT = "true";
-    private static final String CHARACTER_ENCODING = "UTF-8";
-    private static final String USE_UNICODE = "true";
-
-
-    {
-        configProp = new Properties();
-        configProp.put("user", USER);
-        configProp.put("password", PASSWORD);
-        configProp.put("autoReconnect", AUTO_RECONNECT);
-        configProp.put("characterEncoding", CHARACTER_ENCODING);
-        configProp.put("useUnicode", USE_UNICODE);
-    }
+    private static final String DATABASE_NAME_PROPERTIES = "database";
+    private static final String URL = "db.url";
+    private static final String USER = "db.user";
+    private static final String PASSWORD = "db.password";
+    private static final String AUTO_RECONNECT = "db.autoReconnect";
+    private static final String CHARACTER_ENCODING = "db.characterEncoding";
+    private static final String USE_UNICODE = "db.useUnicode";
 
     ConnectionProducer() {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(DATABASE_NAME_PROPERTIES);
+        configProp = new Properties();
+        url = resourceBundle.getString(URL);
+        configProp.put("user", resourceBundle.getString(USER));
+        configProp.put("password", resourceBundle.getString(PASSWORD));
+        configProp.put("autoReconnect", resourceBundle.getString(AUTO_RECONNECT));
+        configProp.put("characterEncoding", resourceBundle.getString(CHARACTER_ENCODING));
+        configProp.put("useUnicode", resourceBundle.getString(USE_UNICODE));
         try {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
         } catch (SQLException e) {
@@ -45,6 +45,6 @@ public class ConnectionProducer {
 
     public Connection produce() throws SQLException {
 
-        return DriverManager.getConnection(URL, configProp);
+        return DriverManager.getConnection(url, configProp);
     }
 }

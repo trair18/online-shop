@@ -5,11 +5,9 @@ import com.gmail.trair8.entity.Entity;
 import java.sql.Connection;
 import java.util.List;
 
-public abstract class AbstractDAO <T extends Entity> {
+public abstract class AbstractDAO<T extends Entity> {
 
     protected Connection connection;
-
-
 
     public AbstractDAO(Connection connection) {
         this.connection = connection;

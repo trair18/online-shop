@@ -29,10 +29,10 @@
         <c:forEach var="elem" items="${orders}" varStatus="status">
             <tr>
                 <th scope="row">1</th>
-                <td><c:out value="${elem.productId}"/></td>
-                <td><c:out value="${elem.payment}"/></td>
-                <td><c:out value="${elem.time}"/></td>
-                <td><c:out value="${elem.address}"/></td>
+                <td><c:out value="${elem.value}"/></td>
+                <td><c:out value="${elem.key.payment}"/></td>
+                <td><c:out value="${elem.key.time}"/></td>
+                <td><c:out value="${elem.key.address}"/></td>
 
             </tr>
         </c:forEach>

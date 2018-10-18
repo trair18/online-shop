@@ -2,6 +2,8 @@ package com.gmail.trair8.dao;
 
 import com.gmail.trair8.entity.Product;
 import com.gmail.trair8.exception.OnlineShopException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDAO extends AbstractDAO<Product>{
+public class ProductDAO extends AbstractDAO<Product> {
+
+    private final static Logger LOGGER = LogManager.getLogger(ProductDAO.class);
 
     private final static String SELECT_ALL_PRODUCTS =
             "SELECT * FROM products";
@@ -35,44 +39,46 @@ public class ProductDAO extends AbstractDAO<Product>{
     }
 
 
-
     @Override
-    public List<Product> findAll(){
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_PRODUCTS)){
+    public List<Product> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_PRODUCTS)) {
             List<Product> products = new ArrayList<>();
 
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 products.add(makeEntity(rs));
             }
             return products;
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find all products", e);
             throw new OnlineShopException("Problem when trying to find all products", e);
         }
     }
 
     @Override
-    public Product findEntityById(int id){
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_ID_SQL)){
+    public Product findEntityById(int id) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_ID_SQL)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             rs.next();
             return makeEntity(rs);
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find product by id", e);
             throw new OnlineShopException("Problem when trying to find product by id", e);
         }
     }
 
-    public List<Product> findEntityByCategory(String category){
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_CATEGORY_SQL)){
+    public List<Product> findEntityByCategory(String category) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_CATEGORY_SQL)) {
             List<Product> products = new ArrayList<>();
             ps.setString(1, category);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 products.add(makeEntity(rs));
             }
             return products;
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to find product by category", e);
             throw new OnlineShopException("Problem when trying to find product by category", e);
         }
     }
@@ -90,7 +96,7 @@ public class ProductDAO extends AbstractDAO<Product>{
     }
 
     @Override
-    public void update(int id, Product product){
+    public void update(int id, Product product) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_PRODUCT)) {
             ps.setString(1, product.getName());
             ps.setBigDecimal(2, product.getPrice());
@@ -99,14 +105,15 @@ public class ProductDAO extends AbstractDAO<Product>{
             ps.setString(5, product.getCategory());
             ps.setInt(6, id);
             ps.executeUpdate();
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to update product by id", e);
             throw new OnlineShopException("Problem when trying to update product by id", e);
         }
     }
 
     @Override
     public void insert(Product product) {
-        try (PreparedStatement ps = connection.prepareStatement(INSERT_PRODUCT_SQL)){
+        try (PreparedStatement ps = connection.prepareStatement(INSERT_PRODUCT_SQL)) {
             ps.setString(1, product.getName());
             ps.setBigDecimal(2, product.getPrice());
             ps.setDouble(3, product.getRating());
@@ -115,7 +122,8 @@ public class ProductDAO extends AbstractDAO<Product>{
             ps.setString(6, product.getCategory());
             ps.executeUpdate();
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
+            LOGGER.error("Problem when trying to insert product", e);
             throw new OnlineShopException("Problem when trying to insert product", e);
         }
     }

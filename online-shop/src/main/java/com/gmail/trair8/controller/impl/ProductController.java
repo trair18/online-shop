@@ -5,8 +5,6 @@ import com.gmail.trair8.controller.RequestMappingClass;
 import com.gmail.trair8.controller.RequestMappingMethod;
 import com.gmail.trair8.entity.Product;
 import com.gmail.trair8.service.ProductService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,15 +16,13 @@ import java.util.List;
 @RequestMappingClass(path = "/product")
 public class ProductController implements Controller {
 
-    private final static Logger LOGGER = LogManager.getLogger(ProductController.class);
-
     private ProductService productService = new ProductService();
 
     @RequestMappingMethod(path = "/main")
-    public String findAll(HttpServletRequest request){
+    public String findAll(HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
-        if(session.getAttribute("role") == null){
+        if (session.getAttribute("role") == null) {
             session.setAttribute("role", "guest");
             session.setAttribute("lang", "en");
             session.setAttribute("cart", new ArrayList<Integer>());
@@ -38,7 +34,7 @@ public class ProductController implements Controller {
     }
 
     @RequestMappingMethod(path = "/sneakers")
-    public String findAllSneakers(HttpServletRequest request){
+    public String findAllSneakers(HttpServletRequest request) {
 
         List<Product> products = new ArrayList<>();
         products = productService.findByCategory("sneakers");
@@ -47,7 +43,7 @@ public class ProductController implements Controller {
     }
 
     @RequestMappingMethod(path = "/add")
-    public String add(HttpServletRequest request){
+    public String add(HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
         List<Integer> list = (List<Integer>) session.getAttribute("cart");
@@ -57,19 +53,18 @@ public class ProductController implements Controller {
     }
 
     @RequestMappingMethod(path = "/delete")
-    public String delete(HttpServletRequest request){
+    public String delete(HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
         List<Integer> list = (List<Integer>) session.getAttribute("cart");
-        list.remove((Object)Integer.parseInt(request.getParameter("id")));
+        list.remove((Object) Integer.parseInt(request.getParameter("id")));
         session.setAttribute("cart", list);
         return showCart(request);
     }
 
 
-
     @RequestMappingMethod(path = "/cart")
-    public String showCart(HttpServletRequest request){
+    public String showCart(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         List<Integer> list = (List<Integer>) session.getAttribute("cart");
         List<Product> products = productService.findCartProd(list);
@@ -80,7 +75,7 @@ public class ProductController implements Controller {
 
     @RequestMappingMethod(path = "/addProductForm")
     public String addProductForm(HttpServletRequest request) {
-    return "/jsp/addProductForm.jsp";
+        return "/jsp/addProductForm.jsp";
     }
 
     @RequestMappingMethod(path = "/addProduct")
@@ -130,6 +125,5 @@ public class ProductController implements Controller {
         productService.updateProduct(id, product);
         return "/jsp/addProduct.jsp";
     }
-
 
 }

@@ -3,8 +3,8 @@ package com.gmail.trair8.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Product implements Entity {
-    private int id;
+public class Product extends Entity {
+
     private String name;
     private BigDecimal price;
     private double rating;
@@ -13,6 +13,16 @@ public class Product implements Entity {
     private String category;
 
     public Product() {
+    }
+
+    public Product(int id, String name, BigDecimal price, double rating, boolean inStock, String img, String category) {
+        super(id);
+        this.name = name;
+        this.price = price;
+        this.rating = rating;
+        this.inStock = inStock;
+        this.img = img;
+        this.category = category;
     }
 
     public String getName() {
@@ -47,14 +57,6 @@ public class Product implements Entity {
         this.inStock = inStock;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getImg() {
         return img;
     }
@@ -75,9 +77,9 @@ public class Product implements Entity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Product product = (Product) o;
-        return id == product.id &&
-                Double.compare(product.rating, rating) == 0 &&
+        return Double.compare(product.rating, rating) == 0 &&
                 inStock == product.inStock &&
                 Objects.equals(name, product.name) &&
                 Objects.equals(price, product.price) &&
@@ -88,19 +90,19 @@ public class Product implements Entity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, price, rating, inStock, img, category);
+        return Objects.hash(super.hashCode(), name, price, rating, inStock, img, category);
     }
 
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", price=" + price +
                 ", rating=" + rating +
                 ", inStock=" + inStock +
                 ", img='" + img + '\'' +
                 ", category='" + category + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

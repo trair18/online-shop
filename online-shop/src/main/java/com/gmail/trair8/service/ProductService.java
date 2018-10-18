@@ -14,100 +14,80 @@ import java.util.List;
 
 public class ProductService {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger(ProductService.class);
 
-    public List<Product> findCartProd(List<Integer> list){
-        List<Product> products = new ArrayList<>();
-
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
-
+    public List<Product> findCartProd(List<Integer> list) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
+            List<Product> products = new ArrayList<>();
             ProductDAO productDAO = new ProductDAO(cn);
-
-            for (Integer i: list) {
+            for (Integer i : list) {
                 products.add(productDAO.findEntityById(i));
             }
-            connectionPool.closeConnection(cn);
-
-        return products;
+            return products;
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
+        }
     }
 
-    public List<Product> findAll(){
-        List<Product> products;
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
-
+    public List<Product> findAll() {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             ProductDAO productDAO = new ProductDAO(cn);
-            products = productDAO.findAll();
-            connectionPool.closeConnection(cn);
-
-        return products;
+            return productDAO.findAll();
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
+        }
     }
 
-    public List<Product> findByCategory(String category){
-        List<Product> products;
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
-
+    public List<Product> findByCategory(String category) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             ProductDAO productDAO = new ProductDAO(cn);
-            products = productDAO.findEntityByCategory(category);
-            connectionPool.closeConnection(cn);
+            return productDAO.findEntityByCategory(category);
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
+        }
 
-        return products;
     }
 
-    public void addProduct(Product product){
-        try {
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
+    public void addProduct(Product product) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             cn.setAutoCommit(false);
 
             ProductDAO productDAO = new ProductDAO(cn);
             productDAO.insert(product);
 
             cn.commit();
-            connectionPool.closeConnection(cn);
-
-        }  catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.error(e);
             throw new OnlineShopException(e);
         }
     }
 
 
-    public void updateProduct(int id, Product product){
-        try {
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
+    public void updateProduct(int id, Product product) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             cn.setAutoCommit(false);
 
             ProductDAO productDAO = new ProductDAO(cn);
-            productDAO.update(id ,product);
+            productDAO.update(id, product);
 
             cn.commit();
-            connectionPool.closeConnection(cn);
-
-        }  catch (SQLException e) {
+        } catch (SQLException e) {
             LOGGER.error(e);
             throw new OnlineShopException(e);
         }
     }
 
-    public Product findProductById(int id){
-        Product product;
-
-            ConnectionPool connectionPool = ConnectionPool.getInstance();
-            Connection cn = connectionPool.takeConnection();
-
+    public Product findProductById(int id) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             ProductDAO productDAO = new ProductDAO(cn);
-            product = productDAO.findEntityById(id);
-            connectionPool.closeConnection(cn);
-
-        return product;
+            return productDAO.findEntityById(id);
+        } catch (SQLException e) {
+            LOGGER.error(e);
+            throw new OnlineShopException(e);
+        }
     }
-
-
-
-
 
 }

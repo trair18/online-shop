@@ -1,12 +1,10 @@
 package com.gmail.trair8.servlet;
 
 
-import com.gmail.trair8.controller.*;
+import com.gmail.trair8.controller.EndpointMethod;
+import com.gmail.trair8.controller.RequestMappingClass;
+import com.gmail.trair8.controller.RequestMappingMethod;
 import com.gmail.trair8.controller.impl.Controllers;
-import com.gmail.trair8.controller.impl.ProductController;
-import com.gmail.trair8.controller.impl.UserController;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -22,17 +20,12 @@ import java.util.Map;
 @WebServlet("/")
 public class DispatcherServlet extends HttpServlet {
 
-    private final static Logger LOGGER = LogManager.getLogger();
-
-    private UserController userController = new UserController();
-    private ProductController productController = new ProductController();
     private Map<String, EndpointMethod> map;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         map = initUrlToEndpointMethod();
     }
-
 
 
     @Override
@@ -83,7 +76,5 @@ public class DispatcherServlet extends HttpServlet {
         }
         return urlToEndpointMethod;
     }
-
-
 
 }

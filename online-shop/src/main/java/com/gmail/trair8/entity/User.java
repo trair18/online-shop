@@ -3,8 +3,8 @@ package com.gmail.trair8.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class User implements Entity {
-    private int id;
+public class User extends Entity {
+
     private String email;
     private String password;
     private String surname;
@@ -18,12 +18,16 @@ public class User implements Entity {
         this.blocked = false;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public User(int id, String email, String password, String surname, String firstName, BigDecimal account, int loyaltyPoints, boolean blocked, boolean admin) {
+        super(id);
+        this.email = email;
+        this.password = password;
+        this.surname = surname;
+        this.firstName = firstName;
+        this.account = account;
+        this.loyaltyPoints = loyaltyPoints;
+        this.blocked = blocked;
+        this.admin = admin;
     }
 
     public String getEmail() {
@@ -94,9 +98,9 @@ public class User implements Entity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         User user = (User) o;
-        return id == user.id &&
-                loyaltyPoints == user.loyaltyPoints &&
+        return loyaltyPoints == user.loyaltyPoints &&
                 blocked == user.blocked &&
                 admin == user.admin &&
                 Objects.equals(email, user.email) &&
@@ -109,14 +113,13 @@ public class User implements Entity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, email, password, surname, firstName, account, loyaltyPoints, blocked, admin);
+        return Objects.hash(super.hashCode(), email, password, surname, firstName, account, loyaltyPoints, blocked, admin);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
+                "email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", surname='" + surname + '\'' +
                 ", firstName='" + firstName + '\'' +
@@ -124,6 +127,7 @@ public class User implements Entity {
                 ", loyaltyPoints=" + loyaltyPoints +
                 ", blocked=" + blocked +
                 ", admin=" + admin +
+                ", id=" + id +
                 '}';
     }
 }

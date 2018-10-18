@@ -70,7 +70,6 @@ public class ConnectionPool {
             closeConnectionsQueue(connectionQueue);
         } catch (SQLException e) {
             LOGGER.error("Error closing the connection.", e);
-
         }
     }
 
@@ -80,6 +79,7 @@ public class ConnectionPool {
             connection = connectionQueue.take();
             givenAwayConQueue.add(connection);
         } catch (InterruptedException e) {
+            LOGGER.error("Error connecting to the data source.", e);
             throw new OnlineShopException("Error connecting to the data source.", e);
         }
         return connection;

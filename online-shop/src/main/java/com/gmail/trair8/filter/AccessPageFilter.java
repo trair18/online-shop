@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter(urlPatterns = {"/jsp/*"},
-            initParams = { @WebInitParam(name = "INDEX_PATH", value = "/index.jsp")})
+        initParams = {@WebInitParam(name = "INDEX_PATH", value = "/index.jsp")})
 public class AccessPageFilter implements Filter {
 
     private String indexPath;

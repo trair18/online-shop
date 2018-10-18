@@ -2,8 +2,8 @@ package com.gmail.trair8.entity;
 
 import java.util.Objects;
 
-public class Review implements Entity{
-    private int id;
+public class Review extends Entity{
+
     private int userId;
     private int productId;
     private String text;
@@ -11,7 +11,8 @@ public class Review implements Entity{
     public Review() {
     }
 
-    public Review(int userId, int productId, String text) {
+    public Review(int id, int userId, int productId, String text) {
+        super(id);
         this.userId = userId;
         this.productId = productId;
         this.text = text;
@@ -53,9 +54,9 @@ public class Review implements Entity{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Review review = (Review) o;
-        return id == review.id &&
-                userId == review.userId &&
+        return userId == review.userId &&
                 productId == review.productId &&
                 Objects.equals(text, review.text);
     }
@@ -63,16 +64,16 @@ public class Review implements Entity{
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, userId, productId, text);
+        return Objects.hash(super.hashCode(), userId, productId, text);
     }
 
     @Override
     public String toString() {
         return "Review{" +
-                "id=" + id +
-                ", userId=" + userId +
+                "userId=" + userId +
                 ", productId=" + productId +
                 ", text='" + text + '\'' +
+                ", id=" + id +
                 '}';
     }
 }
