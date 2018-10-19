@@ -14,15 +14,15 @@ import java.util.List;
 
 public class ReviewDAO extends AbstractDAO<Review> {
 
-    private final static Logger LOGGER = LogManager.getLogger(ReviewDAO.class);
+    private static final Logger LOGGER = LogManager.getLogger(ReviewDAO.class);
 
-    private final static String SELECT_ALL_REVIEWS =
+    private static final String SELECT_ALL_REVIEWS =
             "SELECT * FROM reviews";
 
-    private final static String SELECT_REVIEW_BY_ID_SQL =
+    private static final String SELECT_REVIEW_BY_ID_SQL =
             "SELECT * FROM reviews WHERE id = ?";
 
-    private final static String INSERT_REVIEW_SQL =
+    private static final String INSERT_REVIEW_SQL =
             "INSERT INTO reviews (User_id, Product_id, text)" +
                     "VALUES (?, ?, ?)";
 
@@ -36,10 +36,9 @@ public class ReviewDAO extends AbstractDAO<Review> {
 
     @Override
     public List<Review> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_REVIEWS)) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_REVIEWS);
+             ResultSet rs = ps.executeQuery()) {
             List<Review> reviews = new ArrayList<>();
-
-            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 reviews.add(makeEntity(rs));
             }
@@ -54,9 +53,10 @@ public class ReviewDAO extends AbstractDAO<Review> {
     public Review findEntityById(int id) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_REVIEW_BY_ID_SQL)) {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            return makeEntity(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                return makeEntity(rs);
+            }
         } catch (SQLException e) {
             LOGGER.error("Problem when trying to find review by id", e);
             throw new OnlineShopException("Problem when trying to find review by id", e);

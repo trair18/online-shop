@@ -16,16 +16,16 @@ import java.util.List;
 
 public class UserDAO extends AbstractDAO<User> {
 
-    private final static Logger LOGGER = LogManager.getLogger(UserDAO.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserDAO.class);
 
-    private final static String INSERT_USER_SQL =
+    private static final String INSERT_USER_SQL =
             "INSERT INTO users (email, password, isAdmin, firstName, surname, account, loyaltyPoints, isBlocked)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private final static String SELECT_USER_BY_ID_SQL =
+    private static final String SELECT_USER_BY_ID_SQL =
             "SELECT * FROM users WHERE id = ?";
-    private final static String SELECT_USER_BY_EMAIL =
+    private static final String SELECT_USER_BY_EMAIL =
             "SELECT * FROM users WHERE email = ?";
-    private final static String SELECT_ALL_USERS =
+    private static final String SELECT_ALL_USERS =
             "SELECT * FROM users";
     private static final String UPDATE_USER =
             "UPDATE users SET email = ?, password = ?, firstName = ?, surname = ?, account = ?, loyaltyPoints = ?, isBlocked = ? WHERE id = ?";
@@ -40,10 +40,9 @@ public class UserDAO extends AbstractDAO<User> {
 
     @Override
     public List<User> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_USERS)) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_USERS);
+             ResultSet rs = ps.executeQuery()) {
             List<User> clients = new ArrayList<>();
-
-            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 clients.add(makeEntity(rs));
             }
@@ -56,12 +55,14 @@ public class UserDAO extends AbstractDAO<User> {
 
     @Override
     public User findEntityById(int id) {
-
         try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_ID_SQL)) {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            return makeEntity(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                rs.close();
+                ps.close();
+                return makeEntity(rs);
+            }
         } catch (SQLException e) {
             LOGGER.error("Problem when trying to find user by id", e);
             throw new OnlineShopException("Problem when trying to find user by id", e);
@@ -69,19 +70,20 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public User findEntityByEmail(String email) {
-
         try (PreparedStatement ps = connection.prepareStatement(SELECT_USER_BY_EMAIL)) {
             ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                return null;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return makeEntity(rs);
             }
-            return makeEntity(rs);
         } catch (SQLException e) {
             LOGGER.error("Problem when trying to find user by email", e);
             throw new OnlineShopException("Problem when trying to find user by email", e);
         }
     }
+
 
     private User makeEntity(ResultSet rs) throws SQLException {
         User client = new User();

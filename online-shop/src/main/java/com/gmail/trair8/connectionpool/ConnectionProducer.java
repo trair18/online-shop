@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 public class ConnectionProducer {
 
-    private final static Logger LOGGER = LogManager.getLogger(ConnectionProducer.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConnectionProducer.class);
 
     private String url;
     private Properties configProp;

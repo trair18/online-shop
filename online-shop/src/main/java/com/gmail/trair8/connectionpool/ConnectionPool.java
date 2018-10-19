@@ -85,7 +85,7 @@ public class ConnectionPool {
         return connection;
     }
 
-    public void closeConnection(Connection con, Statement st, ResultSet rs) {
+   /* public void closeConnection(Connection con, Statement st, ResultSet rs) {
 
         try {
             rs.close();
@@ -125,7 +125,7 @@ public class ConnectionPool {
             LOGGER.error("Connection isn't return to the pool.", e);
         }
     }
-
+*/
 
     private void closeConnectionsQueue(Queue<Connection> queue) throws SQLException {
         Connection connection;

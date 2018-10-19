@@ -24,7 +24,6 @@ public class OrderService {
                 orderDAO.insert(order);
             }
             cn.commit();
-            ;
         } catch (SQLException e) {
             LOGGER.error(e);
             throw new OnlineShopException(e);

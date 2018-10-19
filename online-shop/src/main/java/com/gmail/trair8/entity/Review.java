@@ -18,14 +18,6 @@ public class Review extends Entity{
         this.text = text;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getUserId() {
         return userId;
     }

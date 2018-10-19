@@ -27,8 +27,7 @@ public class ProductController implements Controller {
             session.setAttribute("lang", "en");
             session.setAttribute("cart", new ArrayList<Integer>());
         }
-        List<Product> products = new ArrayList<>();
-        products = productService.findAll();
+        List<Product> products = productService.findAll();
         request.setAttribute("products", products);
         return "/jsp/main.jsp";
     }
@@ -36,8 +35,7 @@ public class ProductController implements Controller {
     @RequestMappingMethod(path = "/sneakers")
     public String findAllSneakers(HttpServletRequest request) {
 
-        List<Product> products = new ArrayList<>();
-        products = productService.findByCategory("sneakers");
+        List<Product> products = productService.findByCategory("sneakers");
         request.setAttribute("products", products);
         return "/jsp/sneakers.jsp";
     }

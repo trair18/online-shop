@@ -14,22 +14,22 @@ import java.util.List;
 
 public class ProductDAO extends AbstractDAO<Product> {
 
-    private final static Logger LOGGER = LogManager.getLogger(ProductDAO.class);
+    private static final Logger LOGGER = LogManager.getLogger(ProductDAO.class);
 
-    private final static String SELECT_ALL_PRODUCTS =
+    private static final String SELECT_ALL_PRODUCTS =
             "SELECT * FROM products";
 
-    private final static String SELECT_PRODUCT_BY_ID_SQL =
+    private static final String SELECT_PRODUCT_BY_ID_SQL =
             "SELECT * FROM products WHERE id = ?";
 
-    private final static String SELECT_PRODUCT_BY_CATEGORY_SQL =
+    private static final String SELECT_PRODUCT_BY_CATEGORY_SQL =
             "SELECT * FROM products WHERE category = ?";
 
 
     private static final String UPDATE_PRODUCT =
             "UPDATE products SET name = ?, price = ?, rating = ?, inStock = ?, category = ? WHERE id = ?";
 
-    private final static String INSERT_PRODUCT_SQL =
+    private static final String INSERT_PRODUCT_SQL =
             "INSERT INTO products (name, price, rating, inStock, img, category)" +
                     "VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -41,10 +41,9 @@ public class ProductDAO extends AbstractDAO<Product> {
 
     @Override
     public List<Product> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_PRODUCTS)) {
+        try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_PRODUCTS);
+             ResultSet rs = ps.executeQuery()) {
             List<Product> products = new ArrayList<>();
-
-            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 products.add(makeEntity(rs));
             }
@@ -59,9 +58,10 @@ public class ProductDAO extends AbstractDAO<Product> {
     public Product findEntityById(int id) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_ID_SQL)) {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            return makeEntity(rs);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                return makeEntity(rs);
+            }
         } catch (SQLException e) {
             LOGGER.error("Problem when trying to find product by id", e);
             throw new OnlineShopException("Problem when trying to find product by id", e);
@@ -70,13 +70,14 @@ public class ProductDAO extends AbstractDAO<Product> {
 
     public List<Product> findEntityByCategory(String category) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_CATEGORY_SQL)) {
-            List<Product> products = new ArrayList<>();
             ps.setString(1, category);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                products.add(makeEntity(rs));
+            List<Product> products = new ArrayList<>();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    products.add(makeEntity(rs));
+                }
+                return products;
             }
-            return products;
         } catch (SQLException e) {
             LOGGER.error("Problem when trying to find product by category", e);
             throw new OnlineShopException("Problem when trying to find product by category", e);

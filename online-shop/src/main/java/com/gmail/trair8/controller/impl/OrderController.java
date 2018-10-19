@@ -32,7 +32,6 @@ public class OrderController implements Controller {
     public String makeOrder(HttpServletRequest request) {
         String address = request.getParameter("address");
         String payment = request.getParameter("payment");
-        System.out.println(payment);
         HttpSession session = request.getSession(true);
         int userId = (Integer) session.getAttribute("id");
 

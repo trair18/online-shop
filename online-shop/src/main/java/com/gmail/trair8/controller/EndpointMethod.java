@@ -1,6 +1,5 @@
 package com.gmail.trair8.controller;
 
-import com.gmail.trair8.dao.ProductDAO;
 import com.gmail.trair8.exception.OnlineShopException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +10,7 @@ import java.lang.reflect.Method;
 
 public class EndpointMethod {
 
-    private final static Logger LOGGER = LogManager.getLogger(EndpointMethod.class);
+    private static final Logger LOGGER = LogManager.getLogger(EndpointMethod.class);
 
     private Method method;
     private Object controller;

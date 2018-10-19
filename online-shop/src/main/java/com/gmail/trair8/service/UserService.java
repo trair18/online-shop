@@ -44,16 +44,14 @@ public class UserService {
 
     public User signIn(String email, String password) {
 
-        try(Connection cn = ConnectionPool.getInstance().takeConnection()) {
+        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
             UserDAO userDAO = new UserDAO(cn);
             User user = userDAO.findEntityByEmail(email);
-            if (user != null) {
-                if (BCryptHash.checkPassword(password, user.getPassword())) {
-                    return user;
-                }
+            if (user != null && BCryptHash.checkPassword(password, user.getPassword())) {
+                return user;
             }
             return null;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             LOGGER.error(e);
             throw new OnlineShopException(e);
         }

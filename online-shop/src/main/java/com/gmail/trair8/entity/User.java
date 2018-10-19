@@ -18,18 +18,6 @@ public class User extends Entity {
         this.blocked = false;
     }
 
-    public User(int id, String email, String password, String surname, String firstName, BigDecimal account, int loyaltyPoints, boolean blocked, boolean admin) {
-        super(id);
-        this.email = email;
-        this.password = password;
-        this.surname = surname;
-        this.firstName = firstName;
-        this.account = account;
-        this.loyaltyPoints = loyaltyPoints;
-        this.blocked = blocked;
-        this.admin = admin;
-    }
-
     public String getEmail() {
         return email;
     }
