@@ -1,6 +1,7 @@
 package com.gmail.trair8.servlet;
 
 
+import com.gmail.trair8.connectionpool.ConnectionPool;
 import com.gmail.trair8.controller.EndpointMethod;
 import com.gmail.trair8.controller.RequestMappingClass;
 import com.gmail.trair8.controller.RequestMappingMethod;
@@ -25,6 +26,12 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void init() {
         map = initUrlToEndpointMethod();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        ConnectionPool.getInstance().dispose();
     }
 
 

@@ -27,7 +27,7 @@ public class ProductDAO extends AbstractDAO<Product> {
 
 
     private static final String UPDATE_PRODUCT =
-            "UPDATE products SET name = ?, price = ?, rating = ?, inStock = ?, category = ? WHERE id = ?";
+            "UPDATE products SET name = ?, price = ?, rating = ?, inStock = ?, category = ?, img = ? WHERE id = ?";
 
     private static final String INSERT_PRODUCT_SQL =
             "INSERT INTO products (name, price, rating, inStock, img, category)" +
@@ -104,7 +104,8 @@ public class ProductDAO extends AbstractDAO<Product> {
             ps.setDouble(3, product.getRating());
             ps.setBoolean(4, product.isInStock());
             ps.setString(5, product.getCategory());
-            ps.setInt(6, id);
+            ps.setString(6, product.getImg());
+            ps.setInt(7, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             LOGGER.error("Problem when trying to update product by id", e);

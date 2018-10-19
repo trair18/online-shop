@@ -8,6 +8,7 @@ import com.gmail.trair8.service.ProductService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +35,25 @@ public class ProductController implements Controller {
 
     @RequestMappingMethod(path = "/sneakers")
     public String findAllSneakers(HttpServletRequest request) {
-
         List<Product> products = productService.findByCategory("sneakers");
         request.setAttribute("products", products);
-        return "/jsp/sneakers.jsp";
+        return "/jsp/products.jsp";
     }
+
+    @RequestMappingMethod(path = "/clothes")
+    public String findAllClothes(HttpServletRequest request) {
+        List<Product> products = productService.findByCategory("clothes");
+        request.setAttribute("products", products);
+        return "/jsp/products.jsp";
+    }
+
+    @RequestMappingMethod(path = "/accessories")
+    public String findAllAccessories(HttpServletRequest request) {
+        List<Product> products = productService.findByCategory("accessories");
+        request.setAttribute("products", products);
+        return "/jsp/products.jsp";
+    }
+
 
     @RequestMappingMethod(path = "/add")
     public String add(HttpServletRequest request) {

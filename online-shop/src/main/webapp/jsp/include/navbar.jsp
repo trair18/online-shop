@@ -25,11 +25,9 @@
                     <fmt:message key="text.catalog.title"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#"><fmt:message key="text.catalog.clothes"/></a>
+                    <a class="dropdown-item" href="/online-shop/product/clothes"><fmt:message key="text.catalog.clothes"/></a>
                     <a class="dropdown-item" href="/online-shop/product/sneakers"><fmt:message key="text.catalog.sneakers"/></a>
-                    <a class="dropdown-item" href="#"><fmt:message key="text.catalog.accessories"/></a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#"><fmt:message key="text.catalog.sales"/></a>
+                    <a class="dropdown-item" href="/online-shop/product/accessories"><fmt:message key="text.catalog.accessories"/></a>
                 </div>
             </li>
 

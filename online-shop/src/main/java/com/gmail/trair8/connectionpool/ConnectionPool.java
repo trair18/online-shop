@@ -73,6 +73,16 @@ public class ConnectionPool {
         }
     }
 
+    private void closeConnectionsQueue(Queue<Connection> queue) throws SQLException {
+        Connection connection;
+        while ((connection = queue.poll()) != null) {
+            if (!connection.getAutoCommit()) {
+                connection.commit();
+            }
+            ((ProxyConnection) connection).reallyClose();
+        }
+    }
+
     public Connection takeConnection() {
         Connection connection = null;
         try {
@@ -85,57 +95,6 @@ public class ConnectionPool {
         return connection;
     }
 
-   /* public void closeConnection(Connection con, Statement st, ResultSet rs) {
-
-        try {
-            rs.close();
-        } catch (SQLException e) {
-            LOGGER.error("ResultSet isn't closed.", e);
-        }
-        try {
-            st.close();
-        } catch (SQLException e) {
-            LOGGER.error("Statement isn't closed.", e);
-        }
-        try {
-            con.close();
-        } catch (SQLException e) {
-            LOGGER.error("Connection isn't return to the pool.", e);
-        }
-    }
-
-    public void closeConnection(Connection con, Statement st) {
-
-        try {
-            st.close();
-        } catch (SQLException e) {
-            LOGGER.error("Statement isn't closed.", e);
-        }
-        try {
-            con.close();
-        } catch (SQLException e) {
-            LOGGER.error("Connection isn't return to the pool.", e);
-        }
-    }
-
-    public void closeConnection(Connection con) {
-        try {
-            con.close();
-        } catch (SQLException e) {
-            LOGGER.error("Connection isn't return to the pool.", e);
-        }
-    }
-*/
-
-    private void closeConnectionsQueue(Queue<Connection> queue) throws SQLException {
-        Connection connection;
-        while ((connection = queue.poll()) != null) {
-            if (!connection.getAutoCommit()) {
-                connection.commit();
-            }
-            ((ProxyConnection) connection).reallyClose();
-        }
-    }
 
 
     private class ProxyConnection implements Connection {
