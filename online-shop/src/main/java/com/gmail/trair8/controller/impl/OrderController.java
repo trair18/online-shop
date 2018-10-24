@@ -1,6 +1,5 @@
 package com.gmail.trair8.controller.impl;
 
-import com.gmail.trair8.controller.Controller;
 import com.gmail.trair8.controller.RequestMappingClass;
 import com.gmail.trair8.controller.RequestMappingMethod;
 import com.gmail.trair8.entity.Order;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequestMappingClass(path = "/order")
-public class OrderController implements Controller {
+public class OrderController {
 
     private OrderService orderService = new OrderService();
 
@@ -51,9 +50,7 @@ public class OrderController implements Controller {
         }
         orderService.makeOrder(orderList);
         session.setAttribute("cart", new ArrayList<Integer>());
-
-
-        return Controllers.PRODUCT_CONTROLLER.findAll(request);
+        return "redirect /online-shop/product/main";
     }
 
     @RequestMappingMethod(path = "/myOrders")

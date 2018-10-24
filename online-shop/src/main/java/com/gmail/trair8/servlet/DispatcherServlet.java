@@ -5,7 +5,10 @@ import com.gmail.trair8.connectionpool.ConnectionPool;
 import com.gmail.trair8.controller.EndpointMethod;
 import com.gmail.trair8.controller.RequestMappingClass;
 import com.gmail.trair8.controller.RequestMappingMethod;
-import com.gmail.trair8.controller.impl.Controllers;
+import com.gmail.trair8.controller.impl.Controller;
+import com.gmail.trair8.exception.OnlineShopException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,11 +24,13 @@ import java.util.Map;
 @WebServlet("/")
 public class DispatcherServlet extends HttpServlet {
 
+    private static final Logger LOGGER = LogManager.getLogger(DispatcherServlet.class);
+
     private Map<String, EndpointMethod> map;
 
     @Override
     public void init() {
-        map = initUrlToEndpointMethod();
+        map = initUrlToEndpointMethodMap();
     }
 
     @Override
@@ -49,39 +54,46 @@ public class DispatcherServlet extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            String path = request.getRequestURI();
 
-        String path = request.getRequestURI();
-
-        EndpointMethod endpointMethod = map.get(path);
-        String view = endpointMethod.invoke(request);
-
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
-        requestDispatcher.forward(request, response);
-
+            EndpointMethod endpointMethod = map.get(path);
+            String view = endpointMethod.invoke(request);
+            while (view.startsWith("redirect ")) {
+                path = view.substring("redirect ".length());
+                endpointMethod = map.get(path);
+                view = endpointMethod.invoke(request);
+            }
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
+            requestDispatcher.forward(request, response);
+        } catch (Exception e){
+            LOGGER.error(e);
+        }
     }
 
-    private Map<String, EndpointMethod> initUrlToEndpointMethod() {
-        String servletPath = "/online-shop";
-        String classPath = null;
-        String methodPath = null;
-        Map<String, EndpointMethod> urlToEndpointMethod = new HashMap<>();
-        for (Object controller : Controllers.getAll()) {
+    private Map<String, EndpointMethod> initUrlToEndpointMethodMap() {
+        String servletMapping = "/online-shop";
+        String classMapping = null;
+        String methodMapping = null;
+        Map<String, EndpointMethod> urlToEndpointMethodMap = new HashMap<>();
+        for (Controller controllerEnum : Controller.values()) {
+            Object controller = controllerEnum.getInstance();
             if (controller.getClass().isAnnotationPresent(RequestMappingClass.class)) {
                 RequestMappingClass requestMappingClass = controller.getClass().getAnnotation(RequestMappingClass.class);
-                classPath = requestMappingClass.path();
+                classMapping = requestMappingClass.path();
             }
             for (Method method : controller.getClass().getDeclaredMethods()) {
                 if (method.isAnnotationPresent(RequestMappingMethod.class)) {
                     RequestMappingMethod requestMappingMethod = method.getAnnotation(RequestMappingMethod.class);
-                    methodPath = requestMappingMethod.path();
-                    urlToEndpointMethod.put(
-                            servletPath + classPath + methodPath,
+                    methodMapping = requestMappingMethod.path();
+                    urlToEndpointMethodMap.put(
+                            servletMapping + classMapping + methodMapping,
                             new EndpointMethod(method, controller)
                     );
                 }
             }
         }
-        return urlToEndpointMethod;
+        return urlToEndpointMethodMap;
     }
 
 }

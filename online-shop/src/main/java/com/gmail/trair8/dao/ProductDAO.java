@@ -34,13 +34,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                     "VALUES (?, ?, ?, ?, ?, ?)";
 
 
-    public ProductDAO(Connection connection) {
-        super(connection);
+    public ProductDAO(){
     }
 
 
     @Override
-    public List<Product> findAll() {
+    public List<Product> findAll(Connection connection) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_PRODUCTS);
              ResultSet rs = ps.executeQuery()) {
             List<Product> products = new ArrayList<>();
@@ -49,13 +48,13 @@ public class ProductDAO extends AbstractDAO<Product> {
             }
             return products;
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to find all products", e);
+            LOGGER.error("Problem when trying to find all products");
             throw new OnlineShopException("Problem when trying to find all products", e);
         }
     }
 
     @Override
-    public Product findEntityById(int id) {
+    public Product findEntityById(Connection connection, int id) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_ID_SQL)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -63,12 +62,12 @@ public class ProductDAO extends AbstractDAO<Product> {
                 return makeEntity(rs);
             }
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to find product by id", e);
+            LOGGER.error("Problem when trying to find product by id");
             throw new OnlineShopException("Problem when trying to find product by id", e);
         }
     }
 
-    public List<Product> findEntityByCategory(String category) {
+    public List<Product> findEntityByCategory(Connection connection, String category) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_PRODUCT_BY_CATEGORY_SQL)) {
             ps.setString(1, category);
             List<Product> products = new ArrayList<>();
@@ -79,7 +78,7 @@ public class ProductDAO extends AbstractDAO<Product> {
                 return products;
             }
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to find product by category", e);
+            LOGGER.error("Problem when trying to find product by category");
             throw new OnlineShopException("Problem when trying to find product by category", e);
         }
     }
@@ -97,7 +96,7 @@ public class ProductDAO extends AbstractDAO<Product> {
     }
 
     @Override
-    public void update(int id, Product product) {
+    public void update(Connection connection, int id, Product product) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_PRODUCT)) {
             ps.setString(1, product.getName());
             ps.setBigDecimal(2, product.getPrice());
@@ -108,13 +107,13 @@ public class ProductDAO extends AbstractDAO<Product> {
             ps.setInt(7, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to update product by id", e);
+            LOGGER.error("Problem when trying to update product by id");
             throw new OnlineShopException("Problem when trying to update product by id", e);
         }
     }
 
     @Override
-    public void insert(Product product) {
+    public void insert(Connection connection, Product product) {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_PRODUCT_SQL)) {
             ps.setString(1, product.getName());
             ps.setBigDecimal(2, product.getPrice());
@@ -125,7 +124,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to insert product", e);
+            LOGGER.error("Problem when trying to insert product");
             throw new OnlineShopException("Problem when trying to insert product", e);
         }
     }

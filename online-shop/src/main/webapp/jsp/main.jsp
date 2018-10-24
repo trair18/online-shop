@@ -33,7 +33,7 @@
 
                 <div class="col-sm-3">
                     <form class="card" style="width: 18rem;" action="${pageContext.request.contextPath}/product/add" method="GET">
-                        <img class="card-img-top" src="${elem.img}" alt="Card image cap">
+                        <img class="card-img-top" src="${elem.img}" alt="Card image cap" >
                         <div class="card-body">
                             <h5 class="card-title"><c:out value="${elem.name}"/></h5>
                             <p class="card-text"><c:out value="${elem.price}"/></p>

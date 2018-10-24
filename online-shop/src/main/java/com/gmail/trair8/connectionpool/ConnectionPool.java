@@ -41,7 +41,7 @@ public class ConnectionPool {
                 connectionQueue.add(proxyConnection);
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException in ConnectionPool", e);
+            LOGGER.error("SQLException in ConnectionPool");
             throw new OnlineShopException("SQLException in ConnectionPool", e);
         }
     }
@@ -69,7 +69,7 @@ public class ConnectionPool {
             closeConnectionsQueue(givenAwayConQueue);
             closeConnectionsQueue(connectionQueue);
         } catch (SQLException e) {
-            LOGGER.error("Error closing the connection.", e);
+            LOGGER.error("Error closing the connection.");
         }
     }
 
@@ -89,7 +89,7 @@ public class ConnectionPool {
             connection = connectionQueue.take();
             givenAwayConQueue.add(connection);
         } catch (InterruptedException e) {
-            LOGGER.error("Error connecting to the data source.", e);
+            LOGGER.error("Error connecting to the data source.");
             throw new OnlineShopException("Error connecting to the data source.", e);
         }
         return connection;
@@ -110,12 +110,14 @@ public class ConnectionPool {
         }
 
         @Override
-        public void close() throws SQLException {
-            if (connection.isClosed()) {
-                LOGGER.error("Attempting to close closed connection.");
-            }
-            if (connection.isReadOnly()) {
-                connection.setReadOnly(false);
+        public void close() {
+            try {
+                if (connection.isReadOnly()) {
+                    connection.setReadOnly(false);
+                }
+            }catch (SQLException e){
+                LOGGER.error(e);
+                throw new OnlineShopException(e);
             }
             if (!givenAwayConQueue.remove(this)) {
                 LOGGER.error("Error deleting connection from the given away connections pool.");

@@ -27,15 +27,14 @@ public class ReviewDAO extends AbstractDAO<Review> {
                     "VALUES (?, ?, ?)";
 
     private static final String UPDATE_REVIEW =
-            "UPDATE reviews SET User_id, Product_id = ?, text = ? WHERE id = ?";
+            "UPDATE reviews SET User_id = ?, Product_id = ?, text = ? WHERE id = ?";
 
 
-    public ReviewDAO(Connection connection) {
-        super(connection);
+    public ReviewDAO(){
     }
 
     @Override
-    public List<Review> findAll() {
+    public List<Review> findAll(Connection connection) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_ALL_REVIEWS);
              ResultSet rs = ps.executeQuery()) {
             List<Review> reviews = new ArrayList<>();
@@ -44,13 +43,13 @@ public class ReviewDAO extends AbstractDAO<Review> {
             }
             return reviews;
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to find all reviews", e);
+            LOGGER.error("Problem when trying to find all reviews");
             throw new OnlineShopException("Problem when trying to find all reviews", e);
         }
     }
 
     @Override
-    public Review findEntityById(int id) {
+    public Review findEntityById(Connection connection,int id) {
         try (PreparedStatement ps = connection.prepareStatement(SELECT_REVIEW_BY_ID_SQL)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -58,7 +57,7 @@ public class ReviewDAO extends AbstractDAO<Review> {
                 return makeEntity(rs);
             }
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to find review by id", e);
+            LOGGER.error("Problem when trying to find review by id");
             throw new OnlineShopException("Problem when trying to find review by id", e);
         }
     }
@@ -75,20 +74,20 @@ public class ReviewDAO extends AbstractDAO<Review> {
 
 
     @Override
-    public void insert(Review review) {
+    public void insert(Connection connection, Review review) {
         try (PreparedStatement ps = connection.prepareStatement(INSERT_REVIEW_SQL)) {
             ps.setInt(1, review.getUserId());
             ps.setInt(2, review.getProductId());
             ps.setString(3, review.getText());
             ps.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to insert review", e);
+            LOGGER.error("Problem when trying to insert review");
             throw new OnlineShopException("Problem when trying to insert review", e);
         }
     }
 
     @Override
-    public void update(int id, Review review) {
+    public void update(Connection connection, int id, Review review) {
         try (PreparedStatement ps = connection.prepareStatement(UPDATE_REVIEW)) {
             ps.setInt(1, review.getUserId());
             ps.setInt(2, review.getProductId());
@@ -96,7 +95,7 @@ public class ReviewDAO extends AbstractDAO<Review> {
             ps.setInt(4, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Problem when trying to update review by id", e);
+            LOGGER.error("Problem when trying to update review by id");
             throw new OnlineShopException("Problem when trying to update review by id", e);
         }
     }

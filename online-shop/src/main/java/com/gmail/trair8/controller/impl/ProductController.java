@@ -1,6 +1,5 @@
 package com.gmail.trair8.controller.impl;
 
-import com.gmail.trair8.controller.Controller;
 import com.gmail.trair8.controller.RequestMappingClass;
 import com.gmail.trair8.controller.RequestMappingMethod;
 import com.gmail.trair8.entity.Product;
@@ -8,14 +7,13 @@ import com.gmail.trair8.service.ProductService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @RequestMappingClass(path = "/product")
-public class ProductController implements Controller {
+public class ProductController {
 
     private ProductService productService = new ProductService();
 

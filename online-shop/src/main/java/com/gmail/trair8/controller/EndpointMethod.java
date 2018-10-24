@@ -24,7 +24,7 @@ public class EndpointMethod {
         try {
             return method.invoke(controller, request).toString();
         } catch (IllegalAccessException | InvocationTargetException e) {
-            LOGGER.error("Problem in reflection while calling controller method", e);
+            LOGGER.error("Problem in reflection while calling controller method");
             throw new OnlineShopException("Problem in reflection while calling controller method", e);
         }
 

@@ -43,7 +43,7 @@
                     <fmt:message key="text.user.profile"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#"><fmt:message key="text.user.myInformation"/></a>
+                    <a class="dropdown-item" href="/online-shop/user/userPage"><fmt:message key="text.user.myInformation"/></a>
                     <a class="dropdown-item" href="/online-shop/order/myOrders"><fmt:message key="text.user.myOrders"/></a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/online-shop/user/signout" ><fmt:message key="text.user.signOut"/></a>

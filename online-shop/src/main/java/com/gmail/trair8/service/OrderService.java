@@ -12,56 +12,32 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import static com.gmail.trair8.util.ConnectionUtils.modifyOperations;
+import static com.gmail.trair8.util.ConnectionUtils.readOperations;
+
 public class OrderService {
 
     private static final Logger LOGGER = LogManager.getLogger(OrderService.class);
 
+    private OrderDAO orderDAO = new OrderDAO();
+
     public void makeOrder(List<Order> orderList) {
-        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
-            cn.setAutoCommit(false);
-            OrderDAO orderDAO = new OrderDAO(cn);
-            for (Order order : orderList) {
-                orderDAO.insert(order);
-            }
-            cn.commit();
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new OnlineShopException(e);
+        for (Order order : orderList) {
+            modifyOperations(connection -> orderDAO.insert(connection, order));
         }
     }
 
     public Map<Order, String> findOrders(int id) {
-        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
-            OrderDAO orderDAO = new OrderDAO(cn);
-            return orderDAO.findOrderByUserId(id);
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new OnlineShopException(e);
-        }
+
+        return readOperations(connection -> orderDAO.findOrderByUserId(connection, id));
     }
 
     public List<Order> findAll() {
-        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
-            OrderDAO orderDAO = new OrderDAO(cn);
-            return orderDAO.findAll();
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new OnlineShopException(e);
-        }
+        return readOperations(connection -> orderDAO.findAll(connection));
     }
 
     public void updateActual(int id, boolean actual) {
-        try (Connection cn = ConnectionPool.getInstance().takeConnection()) {
-            cn.setAutoCommit(false);
-
-            OrderDAO orderDAO = new OrderDAO(cn);
-            orderDAO.updateActual(id, actual);
-
-            cn.commit();
-        } catch (SQLException e) {
-            LOGGER.error(e);
-            throw new OnlineShopException(e);
-        }
+            modifyOperations(connection -> orderDAO.updateActual(connection, id, actual));
     }
 
 }
