@@ -56,14 +56,19 @@ public class DispatcherServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String path = request.getRequestURI();
-
+            System.out.println(path);
             EndpointMethod endpointMethod = map.get(path);
+            if (endpointMethod == null){
+                LOGGER.error("endpointMethod not found.");
+                throw new OnlineShopException();
+            }
             String view = endpointMethod.invoke(request);
             while (view.startsWith("redirect ")) {
                 path = view.substring("redirect ".length());
                 endpointMethod = map.get(path);
                 view = endpointMethod.invoke(request);
             }
+
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
             requestDispatcher.forward(request, response);
         } catch (Exception e){

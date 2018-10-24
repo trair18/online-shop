@@ -9,9 +9,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
+    <%@ page session="false" %>
 </head>
 <body>
-<form action = "DispatcherServlet" method="get"></form>
+<form action = "DispatcherServlet" method="post"></form>
 
     <c:redirect url="/product/main">
 
