@@ -1,14 +1,10 @@
 package com.gmail.trair8.service;
 
-import com.gmail.trair8.connectionpool.ConnectionPool;
 import com.gmail.trair8.dao.ProductDAO;
 import com.gmail.trair8.entity.Product;
-import com.gmail.trair8.exception.OnlineShopException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +39,7 @@ public class ProductService {
 
 
     public void updateProduct(int id, Product product) {
-            modifyOperations(connection -> productDAO.update(connection, id, product));
+        modifyOperations(connection -> productDAO.update(connection, id, product));
     }
 
     public Product findProductById(int id) {

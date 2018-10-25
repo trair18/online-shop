@@ -15,10 +15,10 @@ public class ConnectionUtils {
     private static final Logger LOGGER = LogManager.getLogger(ConnectionUtils.class);
 
     public static <R> R readOperations(Function<Connection, R> function) {
-        try(Connection connection = ConnectionPool.getInstance().takeConnection()) {
+        try (Connection connection = ConnectionPool.getInstance().takeConnection()) {
             connection.setReadOnly(true);
             return function.apply(connection);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             LOGGER.error("SQLException in readOperations.");
             throw new OnlineShopException(e);
         }
@@ -31,11 +31,11 @@ public class ConnectionUtils {
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             rollback(connection);
             LOGGER.error("SQLException in modifyOperations.");
             throw new OnlineShopException(e);
-        }finally {
+        } finally {
             close(connection);
         }
     }
@@ -49,10 +49,10 @@ public class ConnectionUtils {
         }
     }
 
-    private static void close(Connection connection){
+    private static void close(Connection connection) {
         try {
             connection.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             LOGGER.error(e);
             throw new OnlineShopException(e);
         }

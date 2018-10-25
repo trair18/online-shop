@@ -56,9 +56,8 @@ public class DispatcherServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String path = request.getRequestURI();
-            System.out.println(path);
             EndpointMethod endpointMethod = map.get(path);
-            if (endpointMethod == null){
+            if (endpointMethod == null) {
                 LOGGER.error("endpointMethod not found.");
                 throw new OnlineShopException();
             }
@@ -71,7 +70,7 @@ public class DispatcherServlet extends HttpServlet {
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(view);
             requestDispatcher.forward(request, response);
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error(e);
         }
     }
